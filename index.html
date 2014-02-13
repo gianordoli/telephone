@@ -24,11 +24,13 @@
         // Create an Image Search instance.
         imageSearch = new google.search.ImageSearch();
 
+        imageSearch.setResultSetSize(8);
+
         // Set searchComplete as the callback function when a search is 
         // complete.  The imageSearch object will have results in it.
         imageSearch.setSearchCompleteCallback(this, searchComplete, null);
 
-        newSearch('justin bieber');
+        newSearch('obama');
       }      
 
       function newSearch(query){
@@ -54,15 +56,18 @@
             var result = results[0];
             var imgContainer = document.createElement('div');
             var title = document.createElement('div');
+            var content = document.createElement('div');
             
             // We use titleNoFormatting so that no HTML tags are left in the title
             title.innerHTML = result.titleNoFormatting;
+            content.innerHTML = result.contentNoFormatting;
             var newImg = document.createElement('img');
 
             // There is also a result.url property which has the escaped version
             newImg.src = result.tbUrl; //Thumb
             // newImg.src = result.url;
             imgContainer.appendChild(title);
+            imgContainer.appendChild(content);
             imgContainer.appendChild(newImg);
 
             // Put our title + image in the content
@@ -70,22 +75,24 @@
 
             var imageIndex = 0;
             console.log('image index: ' + imageIndex);
-            // var content = imageSearch.results[imageIndex].contentNoFormatting;
-            var content = imageSearch.results[imageIndex].titleNoFormatting;
-            while(isStored(content)){
+            var newQuery = imageSearch.results[imageIndex].contentNoFormatting;
+            newQuery = newQuery.toLowerCase();
+            // var newQuery = imageSearch.results[imageIndex].titleNoFormatting;
+            while(isStored(newQuery)){
               console.log('Content already stored.')
               imageIndex++;
               console.log('image index: ' + imageIndex);
-              // content = imageSearch.results[imageIndex].contentNoFormatting;
-              content = imageSearch.results[imageIndex].titleNoFormatting;
+              newQuery = imageSearch.results[imageIndex].contentNoFormatting;
+              newQuery = newQuery.toLowerCase();
+              // newQuery = imageSearch.results[imageIndex].titleNoFormatting;
             }
-            console.log('New content: ' + content)
-            queries.push(content);
+            console.log('New query: ' + newQuery)
+            queries.push(newQuery);
             console.log(queries);
 
             index++;
             if(index < 20){
-              //newSearch(content);
+              newSearch(newQuery);
             }
         }
       }
