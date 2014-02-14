@@ -76,22 +76,22 @@
             var imageIndex = 0;
             console.log('image index: ' + imageIndex);
             var newQuery = imageSearch.results[imageIndex].contentNoFormatting;
-            newQuery = newQuery.toLowerCase();
             // var newQuery = imageSearch.results[imageIndex].titleNoFormatting;
+            newQuery = newQuery.toLowerCase();            
             while(isStored(newQuery)){
               console.log('Content already stored.')
               imageIndex++;
               console.log('image index: ' + imageIndex);
               newQuery = imageSearch.results[imageIndex].contentNoFormatting;
-              newQuery = newQuery.toLowerCase();
               // newQuery = imageSearch.results[imageIndex].titleNoFormatting;
+              newQuery = newQuery.toLowerCase();
             }
             console.log('New query: ' + newQuery)
             queries.push(newQuery);
             console.log(queries);
 
             index++;
-            if(index < 20){
+            if(index < 40){
               newSearch(newQuery);
             }
         }
