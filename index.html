@@ -10,6 +10,7 @@
       var imageSearch;
       var index = 0;
       var queries = [];
+      var delimiters = ['wiki', ',', '.', '-'];
 
       // 2: Load the Google search module
       // module: search; version: 1
@@ -30,7 +31,7 @@
         // complete.  The imageSearch object will have results in it.
         imageSearch.setSearchCompleteCallback(this, searchComplete, null);
 
-        newSearch('obama');
+        newSearch('democratic party');
       }      
 
       function newSearch(query){
@@ -73,28 +74,52 @@
             // Put our title + image in the content
             contentDiv.appendChild(imgContainer);
 
+            //----- Gotta check this block
+            //----- Gotta add the pagination
+            //----- Gotta ckeck for filenames
             var imageIndex = 0;
             console.log('image index: ' + imageIndex);
-            var newQuery = imageSearch.results[imageIndex].contentNoFormatting;
-            // var newQuery = imageSearch.results[imageIndex].titleNoFormatting;
-            newQuery = newQuery.toLowerCase();            
+            // var newQuery = sliceString(imageSearch.results[imageIndex].contentNoFormatting);
+            var newQuery = sliceString(imageSearch.results[imageIndex].titleNoFormatting);
+
             while(isStored(newQuery)){
-              console.log('Content already stored.')
+              console.log('Content already stored.');
               imageIndex++;
               console.log('image index: ' + imageIndex);
-              newQuery = imageSearch.results[imageIndex].contentNoFormatting;
-              // newQuery = imageSearch.results[imageIndex].titleNoFormatting;
-              newQuery = newQuery.toLowerCase();
+              // newQuery = sliceString(imageSearch.results[imageIndex].contentNoFormatting);
+              newQuery = sliceString(imageSearch.results[imageIndex].titleNoFormatting);
             }
             console.log('New query: ' + newQuery)
             queries.push(newQuery);
             console.log(queries);
 
             index++;
-            if(index < 40){
+            if(index < 60){
               newSearch(newQuery);
             }
         }
+      }
+
+      /*---------- AUX FUNCTIONS ----------*/
+      var sliceString = function(str){
+        
+        str.toLowerCase();
+
+        var delimiterIndex = -1;
+        var newString;
+
+        //Start and keep checking is there is any delimiter in the string
+        for(var i = 0; i < delimiters.length; i++){
+          delimiterIndex = str.indexOf(delimiters[i]);
+          console.log('Delimiter Index: ' + delimiterIndex);
+
+          if(delimiterIndex != -1){
+            newString = str.substring(0, delimiterIndex);
+            console.log('New string: ' + newString);
+            break
+          }
+        }
+        return newString;
       }
 
       var isStored = function(content){
@@ -107,20 +132,6 @@
         }
         return contentFound;        
       }
-
-            // var newQuery = imageSearch.results[1].titleNoFormatting;
-            // var endOfSentence = newQuery.lastIndexOf('.');
-            // if(endOfSentence == -1){
-            //   endOfSentence = newQuery.lastIndexOf('-');
-            // }
-            // if(endOfSentence == -1){
-            //   endOfSentence = newQuery.lastIndexOf(':');
-            // }
-            // if(endOfSentence == -1){
-            //   endOfSentence = newQuery.lastIndexOf(' '); 
-            // }
-            // console.log(endOfSentence);
-            // newQuery = newQuery.substring(0, endOfSentence);
       
       
     </script>
