@@ -2,9 +2,7 @@ var imageSearch;
 var imagesArray;
 var index;
 var queries;
-var delimiters = ['wiki', '_', ',', '.', '-', '!', ':', '|', '?', '»'];
-
-var curPage;
+var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.'];
 
 // 2: Load the Google search module
 // module: search; version: 1
@@ -50,7 +48,6 @@ function newSearch(query){
 
 // 6: Looping through all 8 pages and storing each result in a single array
 function createArray(){
-  console.log('ói');
 
   if (imageSearch.results && imageSearch.results.length > 0) {
 
@@ -108,7 +105,7 @@ function searchComplete() {
       console.log('New query: ' + newQuery);
       queries.push(newQuery);
       console.log(queries);
-      if(index < 30){
+      if(index < 20){
         console.log('--------------------------------' + index);
         index++;
         imagesArray = [];
@@ -125,8 +122,9 @@ function nextPage(){
     var curPage = cursor.currentPageIndex; // check what page the app is on
     if(curPage < cursor.pages.length - 1){
       imageSearch.gotoPage(curPage + 1);
+      //createArray();
+      //No need for that! createArray() is already registered as a callback function!
     }
-    createArray();
 }
 
 /*---------- AUX FUNCTIONS ----------*/
