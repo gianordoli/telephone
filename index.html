@@ -8,6 +8,7 @@
     <script type="text/javascript">
 
       var imageSearch;
+      var imagesArray;
       var index = 0;
       var queries = [];
       var delimiters = ['wiki', ',', '.', '-'];
@@ -29,80 +30,92 @@
 
         // Set searchComplete as the callback function when a search is 
         // complete.  The imageSearch object will have results in it.
-        imageSearch.setSearchCompleteCallback(this, searchComplete, null);
+        // imageSearch.setSearchCompleteCallback(this, searchComplete, null);
+        imageSearch.setSearchCompleteCallback(this, createArray, null);
 
-        newSearch('bieber');
-      }      
+        newSearch('brasil');
+      }         
 
+      // 5: Executes the search
       function newSearch(query){
         imageSearch.execute(query);
       }
 
+      // 6: Looping through all 8 pages and storing each result in a single array
+      function createArray(){
+        imagesArray = []; //cleaning the array
 
-      // 5: Displaying the results
-      function searchComplete() {
-        console.log(imageSearch.results);
-
-        // Check that we got results
         if (imageSearch.results && imageSearch.results.length > 0) {
 
-          // Grab our content div, clear it.
-          var contentDiv = document.getElementById('content');
-          // contentDiv.innerHTML = '';
+          var cursor = imageSearch.cursor;
+          var curPage = cursor.currentPageIndex; // check what page the app is on
+          console.log(cursor.pages.length);
 
-          // Loop through our results, printing them to the page.
-          var results = imageSearch.results;
+          if(curPage < cursor.pages.length){
+            imageSearch.gotoPage(curPage + 1);
+          }
 
-            // For each result write it's title and image to the screen
-            var result = results[0];
-            var imgContainer = document.createElement('div');
-            var title = document.createElement('div');
-            var content = document.createElement('div');
-            
-            // We use titleNoFormatting so that no HTML tags are left in the title
-            title.innerHTML = result.titleNoFormatting;
-            content.innerHTML = result.contentNoFormatting;
-            var newImg = document.createElement('img');
+            var results = imageSearch.results;
+            // console.log(results);            
 
-            // There is also a result.url property which has the escaped version
-            newImg.src = result.tbUrl; //Thumb
-            // newImg.src = result.url;
-            imgContainer.appendChild(title);
-            imgContainer.appendChild(content);
-            imgContainer.appendChild(newImg);
+            for (var j = 0; j < results.length; j++) {
+              imagesArray.push(results[j]);
+            }            
+        }
+        console.log(imagesArray);
+        searchComplete();
+      }   
 
-            // Put our title + image in the content
-            contentDiv.appendChild(imgContainer);
+      // 7: Displaying the results
+      function searchComplete() {
+        // console.log(imageSearch.results);
 
-            //----- Gotta check this block
-            //----- Gotta add the pagination
-            //----- Gotta ckeck for filenames
-            var imageIndex = 0;
-            console.log('image index: ' + imageIndex);
-            // var newQuery = sliceString(imageSearch.results[imageIndex].contentNoFormatting);
-            var newQuery = sliceString(imageSearch.results[imageIndex].titleNoFormatting);
+        // Grab our content div, clear it.
+        var contentDiv = document.getElementById('content');
+        // contentDiv.innerHTML = '';
 
-            while(isStored(newQuery)){
-              console.log('Content already stored.');
-              imageIndex++;
-              console.log('image index: ' + imageIndex);
-              // newQuery = sliceString(imageSearch.results[imageIndex].contentNoFormatting);
-              newQuery = sliceString(imageSearch.results[imageIndex].titleNoFormatting);
-            }
-            console.log('New query: ' + newQuery)
+        // For each result write it's title and image to the screen
+        var result = imagesArray[0];
+        var imgContainer = document.createElement('div');
+        var title = document.createElement('div');
+        var content = document.createElement('div');
+        
+        // We use titleNoFormatting so that no HTML tags are left in the title
+        title.innerHTML = result.titleNoFormatting;
+        content.innerHTML = result.contentNoFormatting;
+        var newImg = document.createElement('img');
+
+        // There is also a result.url property which has the escaped version
+        newImg.src = result.tbUrl; //Thumb
+        // newImg.src = result.url;
+        imgContainer.appendChild(title);
+        imgContainer.appendChild(content);
+        imgContainer.appendChild(newImg);
+
+        // Put our title + image in the content
+        contentDiv.appendChild(imgContainer);
+
+        for(imageIndex = 0; imageIndex < imagesArray.length; imageIndex++){
+          console.log('image index: ' + imageIndex);  
+          var newQuery = sliceString(imagesArray[imageIndex].titleNoFormatting);
+          if(isStored(newQuery)){
+            console.log('Content already stored.');  
+          }else{
+            console.log('New query: ' + newQuery);
             queries.push(newQuery);
             console.log(queries);
-
-            index++;
             if(index < 60){
+              index++;
               newSearch(newQuery);
-            }
+            }                
+            break
+          }
         }
       }
 
       /*---------- AUX FUNCTIONS ----------*/
       var sliceString = function(str){
-        
+        str = decodeURI(str);
         str.toLowerCase();
 
         var delimiterIndex = -1;
@@ -132,6 +145,8 @@
         }
         return contentFound;        
       }
+
+
       
       
     </script>
