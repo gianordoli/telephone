@@ -2,7 +2,9 @@ var imageSearch;
 var imagesArray;
 var index;
 var queries;
-var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
+// var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
+// var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.'];  
+var delimiters = ['-', '!', '?', '_', '|', '»', '(', ',', ';', '.', 'wiki'];
 
 // 2: Load the Google search module
 // module: search; version: 1
@@ -98,20 +100,27 @@ function searchComplete() {
   for(imageIndex = 0; imageIndex < imagesArray.length; imageIndex++){
     console.log('image index: ' + imageIndex + '/' + imagesArray.length);  
 
+    // Using content instead of title definitely prevents from ending up in dead ends...
+    // var originalTitle = sliceString(imagesArray[imageIndex].contentNoFormatting);
     var originalTitle = imagesArray[imageIndex].titleNoFormatting;
     console.log('Original original title: ' + originalTitle);
     var newQuery = sliceString(originalTitle);
     console.log('Checking query: ' + newQuery);
 
-    // Using content instead of title definitely prevents from ending up in dead ends...
-    // var newQuery = sliceString(imagesArray[imageIndex].contentNoFormatting);
     if(isStored(newQuery) || isNumeric(newQuery)){
       console.log('Content already stored.');
+
+      //Last resource!!!
+      if(imageIndex == imagesArray.length - 1 && index < 20){
+        newQuery = originalTitle.substr(0, originalTitle.indexOf(' '));
+        index++;
+        newSearch(newQuery);
+      }
     }else{
       console.log('New query: ' + newQuery);
       queries.push(newQuery);
       console.log(queries);
-      if(index < 30){
+      if(index < 20){
         console.log('--------------------------------' + index);
         index++;
         newSearch(newQuery);
@@ -129,10 +138,18 @@ var sliceString = function(str){
   dec = $.parseHTML(decHtml);
   dec = $(dec).text();
   str = dec;  
-  str.toLowerCase();
+  str = str.toLowerCase();
+  console.log('lower case: ' + str);
+  // if(str.indexOf('file') != -1){
+  //   str = str.replace('file', '');
+  // }
 
   var delimiterIndex = -1;
   var newString = str;
+
+  if(str.indexOf(':') != -1){
+    newString = newString.substring(newString.indexOf(':') + 2, newString.length);
+  }
 
   //Start and keep checking is there is any delimiter in the string
   for(var i = 0; i < delimiters.length; i++){
@@ -140,11 +157,13 @@ var sliceString = function(str){
     console.log('Delimiter Index: ' + delimiterIndex);
 
     if(delimiterIndex != -1 && delimiterIndex != 0){
-      var tempString = str.substring(0, delimiterIndex);
-      if(!isStored(tempString)){
-        newString = tempString;
-        break
+      newString = str.substring(0, delimiterIndex);
+      if(newString.length > 50){
+        newString = newString.substring(0, 50);
       }
+      // if(!isStored(tempString)){
+        break
+      // }
     }
   }
   return newString;

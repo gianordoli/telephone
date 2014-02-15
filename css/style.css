@@ -19,7 +19,7 @@ html, body {
 
 div .results{
 	display: inline-block;
-	width: 300px;	
+	width: 200px;	
 	vertical-align: top;
 	/*background-color: hsl(20, 100%, 72%);*/
 }
