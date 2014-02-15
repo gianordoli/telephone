@@ -31,7 +31,7 @@
         // complete.  The imageSearch object will have results in it.
         imageSearch.setSearchCompleteCallback(this, searchComplete, null);
 
-        newSearch('democratic party');
+        newSearch('bieber');
       }      
 
       function newSearch(query){
@@ -106,7 +106,7 @@
         str.toLowerCase();
 
         var delimiterIndex = -1;
-        var newString;
+        var newString = str;
 
         //Start and keep checking is there is any delimiter in the string
         for(var i = 0; i < delimiters.length; i++){
