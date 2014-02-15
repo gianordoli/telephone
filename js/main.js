@@ -5,6 +5,7 @@ var queries;
 // var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
 // var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.'];  
 var delimiters = ['-', '!', '?', '_', '|', '»', '(', ',', ';', '.', 'wiki'];
+  // var delimiters = ['!', '?', '.', '-'];
 
 // 2: Load the Google search module
 // module: search; version: 1
@@ -158,12 +159,12 @@ var sliceString = function(str){
 
     if(delimiterIndex != -1 && delimiterIndex != 0){
       newString = str.substring(0, delimiterIndex);
-      if(newString.length > 50){
-        newString = newString.substring(0, 50);
+      if(newString.length > 40){
+        newString = newString.substring(0, 40);
       }
-      // if(!isStored(tempString)){
+  //     // if(!isStored(tempString)){
         break
-      // }
+  //     // }
     }
   }
   return newString;
