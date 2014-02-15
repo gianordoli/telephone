@@ -11,7 +11,7 @@
       var imagesArray;
       var index = 0;
       var queries = [];
-      var delimiters = ['wiki', ',', '.', '-'];
+      var delimiters = ['wiki', ',', '.', '-', '!', '|', '?', '»'];
 
       // 2: Load the Google search module
       // module: search; version: 1
@@ -33,7 +33,7 @@
         // imageSearch.setSearchCompleteCallback(this, searchComplete, null);
         imageSearch.setSearchCompleteCallback(this, createArray, null);
 
-        newSearch('brasil');
+        newSearch('facebook');
       }         
 
       // 5: Executes the search
@@ -104,7 +104,8 @@
             console.log('New query: ' + newQuery);
             queries.push(newQuery);
             console.log(queries);
-            if(index < 60){
+            if(index < 40){
+              console.log('--------------------------------' + index);
               index++;
               newSearch(newQuery);
             }                
