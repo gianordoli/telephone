@@ -1,8 +1,10 @@
 var imageSearch;
 var imagesArray;
-var index = 0;
-var queries = [];
-var delimiters = ['wiki', ',', '.', '-', '!', '|', '?', '»'];
+var index;
+var queries;
+var delimiters = ['wiki', '_', ',', '.', '-', '!', ':', '|', '?', '»'];
+
+var curPage;
 
 // 2: Load the Google search module
 // module: search; version: 1
@@ -15,8 +17,12 @@ $('#okButton').click(function(){
   var query = $('#searchBox').val();
   console.log('Calling function: ' + query);
   
-  //Clears results div
+  // Clears results div
   $('#content').html('');
+  imagesArray = []; //cleaning the array
+  queries = [];
+  index = 0;
+
   OnLoad(query);
 
 });
@@ -44,24 +50,17 @@ function newSearch(query){
 
 // 6: Looping through all 8 pages and storing each result in a single array
 function createArray(){
-  imagesArray = []; //cleaning the array
+  console.log('ói');
 
   if (imageSearch.results && imageSearch.results.length > 0) {
-
-    var cursor = imageSearch.cursor;
-    var curPage = cursor.currentPageIndex; // check what page the app is on
-    console.log(cursor.pages.length);
-
-    if(curPage < cursor.pages.length){
-      imageSearch.gotoPage(curPage + 1);
-    }
 
       var results = imageSearch.results;
       // console.log(results);            
 
       for (var j = 0; j < results.length; j++) {
         imagesArray.push(results[j]);
-      }            
+      }
+        
   }
   console.log(imagesArray);
   searchComplete();
@@ -70,6 +69,7 @@ function createArray(){
 // 7: Displaying the results
 function searchComplete() {
   // console.log(imageSearch.results);
+  console.log('*****************************************************');
 
   // For each result write it's title and image to the screen
   var result = imagesArray[0];
@@ -81,26 +81,37 @@ function searchComplete() {
   newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
   newDiv = $.parseHTML(newDiv);
   
-  var newContentWidth = (index + 1)*300;
-  $('#content').css({
-    'width': newContentWidth
-  });
+  // var newContentWidth = (index + 1)*300;
+  // $('#content').css({
+  //   'width': newContentWidth
+  // });
 
   $('#content').append(newDiv);
 
-
+  //Verifying next image title
   for(imageIndex = 0; imageIndex < imagesArray.length; imageIndex++){
-    console.log('image index: ' + imageIndex);  
-    var newQuery = sliceString(imagesArray[imageIndex].titleNoFormatting);
+    console.log('image index: ' + imageIndex + '/' + imagesArray.length);  
+    var originalTitle = imagesArray[imageIndex].titleNoFormatting;
+    console.log('Original original title: ' + originalTitle);
+    var newQuery = sliceString(originalTitle);
+    console.log('Checking query: ' + newQuery);
+
+    // Using content instead of title definitely prevents from ending up in dead ends...
+    // var newQuery = sliceString(imagesArray[imageIndex].contentNoFormatting);
     if(isStored(newQuery)){
-      console.log('Content already stored.');  
+      console.log('Content already stored.');
+      if(imageIndex == imagesArray.length - 1){
+        nextPage();
+        break
+      }
     }else{
       console.log('New query: ' + newQuery);
       queries.push(newQuery);
       console.log(queries);
-      if(index < 40){
+      if(index < 30){
         console.log('--------------------------------' + index);
         index++;
+        imagesArray = [];
         newSearch(newQuery);
       }                
       break
@@ -108,9 +119,24 @@ function searchComplete() {
   }
 }
 
+function nextPage(){
+    console.log('-------------------------------- next page!');
+    var cursor = imageSearch.cursor;
+    var curPage = cursor.currentPageIndex; // check what page the app is on
+    if(curPage < cursor.pages.length - 1){
+      imageSearch.gotoPage(curPage + 1);
+    }
+    createArray();
+}
+
 /*---------- AUX FUNCTIONS ----------*/
 var sliceString = function(str){
-  str = decodeURI(str);
+
+  var dec = decodeURI(str);
+  var decHtml = '<p>' + dec + '</p>';
+  dec = $.parseHTML(decHtml);
+  dec = $(dec).text();
+  str = dec;  
   str.toLowerCase();
 
   var delimiterIndex = -1;
@@ -123,7 +149,6 @@ var sliceString = function(str){
 
     if(delimiterIndex != -1){
       newString = str.substring(0, delimiterIndex);
-      console.log('New string: ' + newString);
       break
     }
   }
