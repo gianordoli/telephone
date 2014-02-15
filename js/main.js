@@ -14,7 +14,9 @@ google.load('search', '1');
 $('#okButton').click(function(){
   var query = $('#searchBox').val();
   console.log('Calling function: ' + query);
-
+  
+  //Clears results div
+  $('#content').html('');
   OnLoad(query);
 
 });
@@ -69,30 +71,23 @@ function createArray(){
 function searchComplete() {
   // console.log(imageSearch.results);
 
-  // Grab our content div, clear it.
-  var contentDiv = document.getElementById('content');
-  // contentDiv.innerHTML = '';
-
   // For each result write it's title and image to the screen
   var result = imagesArray[0];
-  var imgContainer = document.createElement('div');
-  var title = document.createElement('div');
-  var content = document.createElement('div');
+  var title = result.titleNoFormatting;
+  var content = result.contentNoFormatting;
+  var newDiv = '<div class="results">';
+  newDiv += '<p><b>' + title + '</b><br>';
+  newDiv += content + '</p>';
+  newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+  newDiv = $.parseHTML(newDiv);
   
-  // We use titleNoFormatting so that no HTML tags are left in the title
-  title.innerHTML = result.titleNoFormatting;
-  content.innerHTML = result.contentNoFormatting;
-  var newImg = document.createElement('img');
+  var newContentWidth = (index + 1)*300;
+  $('#content').css({
+    'width': newContentWidth
+  });
 
-  // There is also a result.url property which has the escaped version
-  newImg.src = result.tbUrl; //Thumb
-  // newImg.src = result.url;
-  imgContainer.appendChild(title);
-  imgContainer.appendChild(content);
-  imgContainer.appendChild(newImg);
+  $('#content').append(newDiv);
 
-  // Put our title + image in the content
-  contentDiv.appendChild(imgContainer);
 
   for(imageIndex = 0; imageIndex < imagesArray.length; imageIndex++){
     console.log('image index: ' + imageIndex);  
