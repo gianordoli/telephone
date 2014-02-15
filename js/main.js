@@ -2,7 +2,7 @@ var imageSearch;
 var imagesArray;
 var index;
 var queries;
-var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.'];
+var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
 
 // 2: Load the Google search module
 // module: search; version: 1
@@ -17,8 +17,8 @@ $('#okButton').click(function(){
   
   // Clears results div
   $('#content').html('');
-  imagesArray = []; //cleaning the array
   queries = [];
+  imagesArray = [];
   index = 0;
 
   OnLoad(query);
@@ -43,6 +43,7 @@ function OnLoad(str) {
 
 // 5: Executes the search
 function newSearch(query){
+  imagesArray = []; //cleaning the array  
   imageSearch.execute(query);
 }
 
@@ -51,15 +52,21 @@ function createArray(){
 
   if (imageSearch.results && imageSearch.results.length > 0) {
 
+    var cursor = imageSearch.cursor;
+    // var curPage = cursor.currentPageIndex; // check what page the app is on
+    // for(curPage = 0; curPage < cursor.pages.length; curPage++){
+    // for(curPage = 0; curPage < 2; curPage++){
+    //   imageSearch.gotoPage(curPage);
+
       var results = imageSearch.results;
       // console.log(results);            
 
       for (var j = 0; j < results.length; j++) {
         imagesArray.push(results[j]);
       }
-        
+    // }    
   }
-  console.log(imagesArray);
+  console.log(imagesArray.length);
   searchComplete();
 }   
 
@@ -85,9 +92,12 @@ function searchComplete() {
 
   $('#content').append(newDiv);
 
+  var query = sliceString(imagesArray[0].titleNoFormatting);
+
   //Verifying next image title
   for(imageIndex = 0; imageIndex < imagesArray.length; imageIndex++){
     console.log('image index: ' + imageIndex + '/' + imagesArray.length);  
+
     var originalTitle = imagesArray[imageIndex].titleNoFormatting;
     console.log('Original original title: ' + originalTitle);
     var newQuery = sliceString(originalTitle);
@@ -95,36 +105,20 @@ function searchComplete() {
 
     // Using content instead of title definitely prevents from ending up in dead ends...
     // var newQuery = sliceString(imagesArray[imageIndex].contentNoFormatting);
-    if(isStored(newQuery)){
+    if(isStored(newQuery) || isNumeric(newQuery)){
       console.log('Content already stored.');
-      if(imageIndex == imagesArray.length - 1){
-        nextPage();
-        break
-      }
     }else{
       console.log('New query: ' + newQuery);
       queries.push(newQuery);
       console.log(queries);
-      if(index < 20){
+      if(index < 30){
         console.log('--------------------------------' + index);
         index++;
-        imagesArray = [];
         newSearch(newQuery);
       }                
       break
     }
   }
-}
-
-function nextPage(){
-    console.log('-------------------------------- next page!');
-    var cursor = imageSearch.cursor;
-    var curPage = cursor.currentPageIndex; // check what page the app is on
-    if(curPage < cursor.pages.length - 1){
-      imageSearch.gotoPage(curPage + 1);
-      //createArray();
-      //No need for that! createArray() is already registered as a callback function!
-    }
 }
 
 /*---------- AUX FUNCTIONS ----------*/
@@ -145,9 +139,12 @@ var sliceString = function(str){
     delimiterIndex = str.indexOf(delimiters[i]);
     console.log('Delimiter Index: ' + delimiterIndex);
 
-    if(delimiterIndex != -1){
-      newString = str.substring(0, delimiterIndex);
-      break
+    if(delimiterIndex != -1 && delimiterIndex != 0){
+      var tempString = str.substring(0, delimiterIndex);
+      if(!isStored(tempString)){
+        newString = tempString;
+        break
+      }
     }
   }
   return newString;
@@ -163,3 +160,7 @@ var isStored = function(content){
   }
   return contentFound;        
 }
+
+var isNumeric = function(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+} 
