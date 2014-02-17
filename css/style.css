@@ -66,6 +66,7 @@ html, body {
 	left: 0;
 	top: 100px;
 	text-align: center;
+	padding: 0 0 0 5px;
 	/*background-color: brown;*/
 }
 
@@ -81,7 +82,7 @@ html, body {
 #divide1{
 	position: absolute;
 	width: 4px;
-	height: 600px;
+	/*height: 600px;*/
 	top: 0;
 	left: -10px;
 	border-left: 5px dashed black;
@@ -89,7 +90,7 @@ html, body {
 #divide2{
 	position: absolute;
 	width: 4px;
-	height: 600px;
+	/*height: 600px;*/
 	top: 0;
 	left: -10px;
 	border-left: 5px dashed black;

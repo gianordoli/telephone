@@ -39,9 +39,9 @@ function positionDivs(){
 
   var divWidth, divHeight, divLeft, divTop;
   
-  divTop = $('#title').height();  
+  divTop = $('#title').height() + 10;  
   divWidth = screenWidth/3 - 5;
-  divHeight = screenWidth - divTop;
+  divHeight = screenHeight - divTop;
 
   $('#firstImage').css({
     'width': divWidth,
@@ -54,26 +54,30 @@ function positionDivs(){
 
   $('#divide1').css({
     'height': divHeight,
-    'left': divLeft
+    'left': divLeft,
+    'top': divTop - 10
   }); 
 
   $('#content').css({
     'width': divWidth,
     'height': divHeight,
-    'left': divLeft
+    'left': divLeft,
+    'top': divTop
   }); 
 
   divLeft += divWidth;  
   // divWidth /= 2;
 
   $('#divide2').css({
-    'height': screenHeight,
-    'left': divLeft
+    'height': divHeight,
+    'left': divLeft,
+    'top': divTop - 10
   }); 
   $('#lastImage').css({
     'width': divWidth,
     'height': divHeight,
-    'left': divLeft
+    'left': divLeft,
+    'top' : divTop
   }); 
 
 }
@@ -153,26 +157,30 @@ function searchComplete() {
   
   if(index == 0 || index == maxSearches){
 
-    var imageWidth, imageHeight, divWidth, divHeight;
+    var imageWidth, imageHeight, divWidth, divHeight, ratio;
     imageWidth = result.width;
     imageHeight = result.height;
     divWidth = $('#firstImage').width();
     divHeight = $('#firstImage').height();
-    if(imageHeight > divHeight){
-      // alert(divHeight + ' : '+ imageHeight);  
-    }
-    
+    ratio = 1;
+
+    // alert('imageWidth: ' + imageWidth + ', imageHeight: ' + imageHeight + ', divWidth: ' + divWidth + ', divHeight: ' + divHeight);
 
     if(imageWidth > divWidth || imageHeight > divHeight){
-      var ratio;
-      if(imageWidth > divWidth){
-        ratio = (divWidth - 20) / imageWidth;
-        // alert(ratio);
-      }
-      
-      imageWidth *= ratio;
-      imageHeight *= ratio;
+      // if(imageWidth > imageHeight){
+        // alert('landscape');
+        ratio = (divWidth - 20) / imageWidth;  
+        var ratio2 = (divHeight - 150) / imageHeight;      
+        if(ratio2 < ratio){
+          ratio = ratio2;
+        }
+      // }else{
+      //   alert('portrait');
+      //   ratio = (divHeight - 100) / imageHeight;      
+      // }
     }
+    imageWidth *= ratio;
+    imageHeight *= ratio;    
 
     var newDiv = '<div class="results">';
     // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
