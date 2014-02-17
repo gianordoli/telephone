@@ -13,6 +13,7 @@ body{
 }
 
 html, body {
+	/*font-size: 13px;*/
     width:      100%;
     height:     100%;
 }
@@ -20,11 +21,32 @@ html, body {
 #title{
 	position: absolute;
 	width: 100%;
-	height: 200px;
+	height: 100px;
 	z-index: 2;
 	left: 0;
 	top: 0;
+	/*text-align: center;*/
+	/*padding: 10px 0 0 0;*/
+	background-color: hsl(50, 100%, 50%);
+	border-bottom: 5px solid black;
 	text-align: left;
+}
+
+.titleBlock{
+	display: inline-block;
+	width: 50%;	
+	text-align: right;
+}
+
+.searchBlock{
+	display: inline-block;
+	/*width: 20%;	*/
+	text-align: left;
+}
+
+.pageTitle{
+	font-size: 60px;
+	font-weight: 600;
 }
 
 #firstImage{
@@ -32,7 +54,8 @@ html, body {
 	/*width: 600px;*/
 	z-index: 2;
 	left: 0;
-	top: 0;
+	top: 100px;
+	text-align: center;
 	/*background-color: brown;*/
 }
 
@@ -41,16 +64,17 @@ html, body {
 	/*width: 600px;*/
 	z-index: 2;
 	left: 0;
-	top: 0;
+	top: 100px;
+	text-align: center;
 	/*background-color: brown;*/
 }
 
 #content{
 	position: absolute;
 	z-index: 0;
-	top: 0;
+	top: 100px;
 	left: 0;
-	overflow: scroll;
+	/*overflow: scroll;*/
 	/*background-color: hsl(20, 100%, 72%);*/
 }
 
@@ -72,34 +96,37 @@ html, body {
 }
 
 .results{
-	position: absolute;
+	/*position: absolute;*/
 	display: inline-block;
 	/*width: 600px;	*/
-	vertical-align: top;
+	/*vertical-align: top;
 	top: 0;
-	left: -10px;	
+	left: -10px;	*/
+	text-align: center;
 	/*background-color: hsl(20, 100%, 72%);*/
 }
 
 .connections{
-	display: inline-block;
+	/*display: inline-block;*/
 	width: 150px;	
-	vertical-align: top;
+	height: 15	0px;
+	/*vertical-align: top;*/
 	border: 5px solid black;
 	background-color: hsl(50, 100%, 50%);
 	/*background-color: black;*/
 }
 
 .firstAndLast{
-	width: 300px;
+	/*width: 400px;*/
 	/*height: 400px;*/
-	display: inline-block;
+	/*display: inline-block;*/
 	border: 5px solid black;
 }
 
 .thumb{
-	width: 100px;
+	/*width: 100px;*/
 	/*height: 400px;*/
+	height: 80px;
 	display: inline-block;
 	border: 5px solid black;
 }
@@ -109,6 +136,8 @@ input{
 	width: 200px;
 	background-color: white;
 	border: 5px solid black;
+	font-weight: 600;
+	padding: 0 5px 0 5px;
 }
 
 button{

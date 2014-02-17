@@ -22,6 +22,7 @@ $('#okButton').click(function(){
   // Clears results div
   $('#firstImage').html('');
   $('#content').html('');
+  $('#lastImage').html('');
   maxSearches = 20;
   queries = [];
   imagesArray = [];
@@ -37,36 +38,41 @@ function positionDivs(){
   var screenHeight = window.innerHeight;
 
   var divWidth, divHeight, divLeft, divTop;
-
-  divWidth = screenWidth/3;
-  divTop = $('#title').height();
+  
+  divTop = $('#title').height();  
+  divWidth = screenWidth/3 - 5;
+  divHeight = screenWidth - divTop;
 
   $('#firstImage').css({
     'width': divWidth,
+    'height': divHeight,
     'top': divTop
   }); 
 
-  divLeft = divWidth; 
+  divLeft = divWidth;
+  // divWidth *= 2; 
 
   $('#divide1').css({
-    'height': screenHeight,
+    'height': divHeight,
     'left': divLeft
   }); 
 
   $('#content').css({
     'width': divWidth,
-    'height': screenHeight,
+    'height': divHeight,
     'left': divLeft
   }); 
 
   divLeft += divWidth;  
+  // divWidth /= 2;
+
   $('#divide2').css({
     'height': screenHeight,
     'left': divLeft
   }); 
   $('#lastImage').css({
     'width': divWidth,
-    'height': screenHeight,
+    'height': divHeight,
     'left': divLeft
   }); 
 
@@ -90,7 +96,7 @@ function OnLoad(str) {
 
 // 5: Executes the search
 function newSearch(query){
-  imagesArray = []; //cleaning the array  
+ 
   imageSearch.execute(query);
 }
 
@@ -98,6 +104,7 @@ function newSearch(query){
 function createArray(){
 
   if (imageSearch.results && imageSearch.results.length > 0) {
+     imagesArray = []; //cleaning the array  
 
     var cursor = imageSearch.cursor;
     // var curPage = cursor.currentPageIndex; // check what page the app is on
@@ -112,9 +119,26 @@ function createArray(){
         imagesArray.push(results[j]);
       }
     // }    
+
+    console.log(imagesArray.length);
+    searchComplete();
+
+  }else{
+    var result = imagesArray[0];
+    var title = result.titleNoFormatting;
+    var content = result.contentNoFormatting;
+
+    var newDiv = '<div class="results">';
+    // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+    newDiv += '<img src="' + result.url + '" class="firstAndLast"/>';  
+    newDiv += '<div class="connections">';
+    newDiv += '<h3>' + title + '</h3>';  
+    // newDiv += '<img src="img/gossip.png"/>';  
+    newDiv += '</div></div>';    
+    newDiv = $.parseHTML(newDiv);
+
+    $('#lastImage').append(newDiv);  
   }
-  console.log(imagesArray.length);
-  searchComplete();
 }   
 
 // 7: Displaying the results
@@ -129,21 +153,35 @@ function searchComplete() {
   
   if(index == 0 || index == maxSearches){
 
+    var imageWidth, imageHeight, divWidth, divHeight;
+    imageWidth = result.width;
+    imageHeight = result.height;
+    divWidth = $('#firstImage').width();
+    divHeight = $('#firstImage').height();
+    if(imageHeight > divHeight){
+      // alert(divHeight + ' : '+ imageHeight);  
+    }
+    
+
+    if(imageWidth > divWidth || imageHeight > divHeight){
+      var ratio;
+      if(imageWidth > divWidth){
+        ratio = (divWidth - 20) / imageWidth;
+        // alert(ratio);
+      }
+      
+      imageWidth *= ratio;
+      imageHeight *= ratio;
+    }
+
     var newDiv = '<div class="results">';
     // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+    newDiv += '<img src="' + result.url + '" class="firstAndLast" width="' + imageWidth + '"  height="' + imageHeight + '"/>';  
     newDiv += '<div class="connections">';
     newDiv += '<h3>' + title + '</h3>';  
     // newDiv += '<img src="img/gossip.png"/>';  
-    newDiv += '</div>';
-    newDiv += '<img src="' + result.url + '" class="firstAndLast"/></div>';  
+    newDiv += '</div></div>';    
     newDiv = $.parseHTML(newDiv);
-
-    var posLeft = 0;
-    var posTop = 0;
-    $(newDiv).css({
-      'top': posTop,
-      'left': posLeft
-    });
 
     if(index == 0){
       $('#firstImage').append(newDiv);  
@@ -158,16 +196,17 @@ function searchComplete() {
     // newDiv += '<h3>' + title + '</h3>';  
     // newDiv += '<img src="img/gossip.png"/>';  
     // newDiv += '</div>';
+    newDiv += '<b> >> </b>';    
     newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
     // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
     newDiv = $.parseHTML(newDiv);
 
-    var posLeft = Math.random()*(window.innerWidth/3 - 100);
-    var posTop = Math.random()*(window.innerHeight - 100);
-    $(newDiv).css({
-      'top': posTop,
-      'left': posLeft
-    });    
+    // var posLeft = Math.random()*(window.innerWidth/3 - 100);
+    // var posTop = Math.random()*(window.innerHeight - 100);
+    // $(newDiv).css({
+    //   'top': posTop,
+    //   'left': posLeft
+    // });    
     $('#content').append(newDiv);
   }
 
