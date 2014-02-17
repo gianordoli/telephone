@@ -19,14 +19,44 @@ $('#okButton').click(function(){
   console.log('Calling function: ' + query);
   
   // Clears results div
+  $('#firstImage').html('');
   $('#content').html('');
   queries = [];
   imagesArray = [];
   index = 0;
 
   OnLoad(query);
+  positionDivs();
 
 });
+
+function positionDivs(){
+  var screenWidth = window.innerWidth;
+  var screenHeight = window.innerHeight;
+
+  var divWidth, divHeight, divLeft, divTop;
+
+  divWidth = screenWidth/2;
+  divTop = $('#title').height();
+
+  $('#firstImage').css({
+    'width': divWidth,
+    'top': divTop
+  }); 
+
+  divLeft = divWidth; 
+
+  $('#divide').css({
+    'height': screenHeight,
+    'left': divLeft
+  }); 
+
+  $('#content').css({
+    'width': divWidth,
+    'height': screenHeight,
+    'left': divLeft
+  });  
+}
 
 // 4: Search parameters
 function OnLoad(str) {
@@ -96,22 +126,41 @@ function searchComplete() {
   //   'width': newContentWidth
   // });
 
-  // if(index == 0){
-  //   $('#firstImage').append(newDiv);
-  // }else{
-  // $('#content').append(newDiv);
-  // }
+  var posLeft, posTop;
 
-  var posTop = 200 + (index*400);
-  var posLeft = Math.random()*(window.innerWidth - 400);
+  var posLeft = (index - 1)*400;
+  var posTop = Math.random()*(window.innerHeight - 500);
   $(newDiv).css({
     'top': posTop,
     'left': posLeft
   });
-  $('#content').append(newDiv);
+  
+  if(index == 0){
+    posLeft = 0;
+    posTop = 0;
+    $(newDiv).css({
+      'top': posTop,
+      'left': posLeft
+    });
+    $('#firstImage').append(newDiv);
+  }else{
+    var posLeft = (index - 1)*400;
+    var posTop = Math.random()*(window.innerHeight - 500);
+    $(newDiv).css({
+      'top': posTop,
+      'left': posLeft
+    });    
+    $('#content').append(newDiv);
+  }
 
-  $('html,body').animate({
-    'scrollTop': posTop
+  // var scroll = -posLeft + 600;
+  // $('#content').animate({
+  //   'left': scroll
+  // }, 'slow');
+
+  var scroll = posLeft + 600;
+  $('#content').animate({
+    'scrollLeft': scroll
   }, 'slow');
 
   var query = sliceString(imagesArray[0].titleNoFormatting);
