@@ -86,21 +86,33 @@ function searchComplete() {
   // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
   newDiv += '<div class="connections">';
   newDiv += '<h3>' + title + '</h3>';  
-  newDiv += '<img src="img/gossip.png"/>';  
+  // newDiv += '<img src="img/gossip.png"/>';  
   newDiv += '</div>';
   newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
   newDiv = $.parseHTML(newDiv);
   
-  var newContentWidth = (index + 1)*400;
-  $('#content').css({
-    'width': newContentWidth
-  });
+  // var newContentWidth = (index + 1)*400;
+  // $('#content').css({
+  //   'width': newContentWidth
+  // });
 
-  if(index == 0){
-    $('#firstImage').append(newDiv);
-  }else{
-    $('#content').append(newDiv);
-  }
+  // if(index == 0){
+  //   $('#firstImage').append(newDiv);
+  // }else{
+  // $('#content').append(newDiv);
+  // }
+
+  var posTop = 200 + (index*400);
+  var posLeft = Math.random()*(window.innerWidth - 400);
+  $(newDiv).css({
+    'top': posTop,
+    'left': posLeft
+  });
+  $('#content').append(newDiv);
+
+  $('html,body').animate({
+    'scrollTop': posTop
+  }, 'slow');
 
   var query = sliceString(imagesArray[0].titleNoFormatting);
 

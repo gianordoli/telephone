@@ -18,32 +18,33 @@ html, body {
 }
 
 header{
-	position: absolute;
+/*	position: absolute;
 	width: 100%;
 	height: 200px;
 	z-index: 2;
 	left: 0;
-	top: 0;
+	top: 0;*/
 }
 
-#firstImage{
+/*#firstImage{
 	position: absolute;
 	width: 200px;
 	z-index: 2;
 	left: 0;
 	top: 200px;
-}
+}*/
 
 #content{
-	position: absolute;
+	/*position: absolute;
 	z-index: 0;
 	left: 200px;
-	top: 200px;
+	top: 200px;*/
 }
 
 .results{
+	position: absolute;
 	display: inline-block;
-	width: 400px;	
+	/*width: 400px;	*/
 	vertical-align: top;
 	/*background-color: hsl(20, 100%, 72%);*/
 }
@@ -52,11 +53,13 @@ header{
 	display: inline-block;
 	width: 150px;	
 	vertical-align: top;
+	border: 5px solid black;
+	background-color: hsl(50, 100%, 50%);
 	/*background-color: black;*/
 }
 
 .thumb{
-	width: 200px;
+	width: 400px;
 	display: inline-block;
 	border: 5px solid black;
 }
