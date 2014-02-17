@@ -1,3 +1,4 @@
+var maxSearches;
 var imageSearch;
 var imagesArray;
 var index;
@@ -21,6 +22,7 @@ $('#okButton').click(function(){
   // Clears results div
   $('#firstImage').html('');
   $('#content').html('');
+  maxSearches = 20;
   queries = [];
   imagesArray = [];
   index = 0;
@@ -36,7 +38,7 @@ function positionDivs(){
 
   var divWidth, divHeight, divLeft, divTop;
 
-  divWidth = screenWidth/2;
+  divWidth = screenWidth/3;
   divTop = $('#title').height();
 
   $('#firstImage').css({
@@ -46,7 +48,7 @@ function positionDivs(){
 
   divLeft = divWidth; 
 
-  $('#divide').css({
+  $('#divide1').css({
     'height': screenHeight,
     'left': divLeft
   }); 
@@ -55,7 +57,19 @@ function positionDivs(){
     'width': divWidth,
     'height': screenHeight,
     'left': divLeft
-  });  
+  }); 
+
+  divLeft += divWidth;  
+  $('#divide2').css({
+    'height': screenHeight,
+    'left': divLeft
+  }); 
+  $('#lastImage').css({
+    'width': divWidth,
+    'height': screenHeight,
+    'left': divLeft
+  }); 
+
 }
 
 // 4: Search parameters
@@ -112,40 +126,44 @@ function searchComplete() {
   var result = imagesArray[0];
   var title = result.titleNoFormatting;
   var content = result.contentNoFormatting;
-  var newDiv = '<div class="results">';
-  // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-  newDiv += '<div class="connections">';
-  newDiv += '<h3>' + title + '</h3>';  
-  // newDiv += '<img src="img/gossip.png"/>';  
-  newDiv += '</div>';
-  newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
-  newDiv = $.parseHTML(newDiv);
   
-  // var newContentWidth = (index + 1)*400;
-  // $('#content').css({
-  //   'width': newContentWidth
-  // });
+  if(index == 0 || index == maxSearches){
 
-  var posLeft, posTop;
+    var newDiv = '<div class="results">';
+    // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+    newDiv += '<div class="connections">';
+    newDiv += '<h3>' + title + '</h3>';  
+    // newDiv += '<img src="img/gossip.png"/>';  
+    newDiv += '</div>';
+    newDiv += '<img src="' + result.url + '" class="firstAndLast"/></div>';  
+    newDiv = $.parseHTML(newDiv);
 
-  var posLeft = (index - 1)*400;
-  var posTop = Math.random()*(window.innerHeight - 500);
-  $(newDiv).css({
-    'top': posTop,
-    'left': posLeft
-  });
-  
-  if(index == 0){
-    posLeft = 0;
-    posTop = 0;
+    var posLeft = 0;
+    var posTop = 0;
     $(newDiv).css({
       'top': posTop,
       'left': posLeft
     });
-    $('#firstImage').append(newDiv);
+
+    if(index == 0){
+      $('#firstImage').append(newDiv);  
+    }else{
+      $('#lastImage').append(newDiv);  
+    }
+
   }else{
-    var posLeft = (index - 1)*400;
-    var posTop = Math.random()*(window.innerHeight - 500);
+
+    var newDiv = '<div class="results">';
+    // newDiv += '<div class="connections">';
+    // newDiv += '<h3>' + title + '</h3>';  
+    // newDiv += '<img src="img/gossip.png"/>';  
+    // newDiv += '</div>';
+    newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+    // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
+    newDiv = $.parseHTML(newDiv);
+
+    var posLeft = Math.random()*(window.innerWidth/3 - 100);
+    var posTop = Math.random()*(window.innerHeight - 100);
     $(newDiv).css({
       'top': posTop,
       'left': posLeft
@@ -158,10 +176,10 @@ function searchComplete() {
   //   'left': scroll
   // }, 'slow');
 
-  var scroll = posLeft + 600;
-  $('#content').animate({
-    'scrollLeft': scroll
-  }, 'slow');
+  // var scroll = posLeft + 600;
+  // $('#content').animate({
+  //   'scrollLeft': scroll
+  // }, 'slow');
 
   var query = sliceString(imagesArray[0].titleNoFormatting);
 
@@ -180,7 +198,7 @@ function searchComplete() {
       console.log('Content already stored.');
 
       //Last resource!!!
-      if(imageIndex == imagesArray.length - 1 && index < 20){
+      if(imageIndex == imagesArray.length - 1 && index < maxSearches){
         // newQuery = originalTitle.substr(0, originalTitle.indexOf(' '));
         newQuery = sliceString(originalContent);
         index++;
@@ -190,7 +208,7 @@ function searchComplete() {
       console.log('New query: ' + newQuery);
       queries.push(newQuery);
       console.log(queries);
-      if(index < 20){
+      if(index < maxSearches){
         console.log('--------------------------------' + index);
         index++;
         newSearch(newQuery);
