@@ -2,13 +2,13 @@ body{
 	padding: 0;
 	border: 0;
 	margin: 0;
-	background-color: hsl(200, 100%, 72%);	
+	background-color: hsl(50, 100%, 50%);	
 
-	text-align: left;	
-	font-family: 'Raleway', sans-serif;
+	text-align: center;	
+/*	font-family: 'Raleway', sans-serif;
 	font-weight: 400;
 	font-size: 13px;
-	line-height: 18px;
+	line-height: 18px;*/
 	color: black;	
 }
 
@@ -17,14 +17,62 @@ html, body {
     height:     100%;
 }
 
-div .results{
+header{
+	position: absolute;
+	width: 100%;
+	height: 200px;
+	z-index: 2;
+	left: 0;
+	top: 0;
+}
+
+#firstImage{
+	position: absolute;
+	width: 200px;
+	z-index: 2;
+	left: 0;
+	top: 200px;
+}
+
+#content{
+	position: absolute;
+	z-index: 0;
+	left: 200px;
+	top: 200px;
+}
+
+.results{
 	display: inline-block;
-	width: 200px;	
+	width: 400px;	
 	vertical-align: top;
 	/*background-color: hsl(20, 100%, 72%);*/
 }
 
-img .thumb{
-	width: 300px;
+.connections{
+	display: inline-block;
+	width: 150px;	
+	vertical-align: top;
+	/*background-color: black;*/
 }
 
+.thumb{
+	width: 200px;
+	display: inline-block;
+	border: 5px solid black;
+}
+
+input{
+	height: 20px;
+	width: 200px;
+	background-color: white;
+	border: 5px solid black;
+}
+
+button{
+	height: 30px;
+	width: 40px;
+	font-weight: 600;
+	color: hsl(50, 100%, 50%);
+	background-color: black;	
+	border: none;
+}

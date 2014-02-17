@@ -83,17 +83,24 @@ function searchComplete() {
   var title = result.titleNoFormatting;
   var content = result.contentNoFormatting;
   var newDiv = '<div class="results">';
-  newDiv += '<p><b>' + title + '</b><br>';
-  newDiv += content + '</p>';
-  newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+  // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+  newDiv += '<div class="connections">';
+  newDiv += '<h3>' + title + '</h3>';  
+  newDiv += '<img src="img/gossip.png"/>';  
+  newDiv += '</div>';
+  newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
   newDiv = $.parseHTML(newDiv);
   
-  // var newContentWidth = (index + 1)*300;
-  // $('#content').css({
-  //   'width': newContentWidth
-  // });
+  var newContentWidth = (index + 1)*400;
+  $('#content').css({
+    'width': newContentWidth
+  });
 
-  $('#content').append(newDiv);
+  if(index == 0){
+    $('#firstImage').append(newDiv);
+  }else{
+    $('#content').append(newDiv);
+  }
 
   var query = sliceString(imagesArray[0].titleNoFormatting);
 
@@ -102,7 +109,7 @@ function searchComplete() {
     console.log('image index: ' + imageIndex + '/' + imagesArray.length);  
 
     // Using content instead of title definitely prevents from ending up in dead ends...
-    // var originalTitle = sliceString(imagesArray[imageIndex].contentNoFormatting);
+    var originalContent = imagesArray[imageIndex].contentNoFormatting;
     var originalTitle = imagesArray[imageIndex].titleNoFormatting;
     console.log('Original original title: ' + originalTitle);
     var newQuery = sliceString(originalTitle);
@@ -113,7 +120,8 @@ function searchComplete() {
 
       //Last resource!!!
       if(imageIndex == imagesArray.length - 1 && index < 20){
-        newQuery = originalTitle.substr(0, originalTitle.indexOf(' '));
+        // newQuery = originalTitle.substr(0, originalTitle.indexOf(' '));
+        newQuery = sliceString(originalContent);
         index++;
         newSearch(newQuery);
       }
@@ -159,9 +167,9 @@ var sliceString = function(str){
 
     if(delimiterIndex != -1 && delimiterIndex != 0){
       newString = str.substring(0, delimiterIndex);
-      if(newString.length > 40){
-        newString = newString.substring(0, 40);
-      }
+      // if(newString.length > 40){
+      //   newString = newString.substring(0, 40);
+      // }
   //     // if(!isStored(tempString)){
         break
   //     // }
