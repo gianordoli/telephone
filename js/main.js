@@ -108,40 +108,16 @@ function newSearch(query){
 function createArray(){
 
   if (imageSearch.results && imageSearch.results.length > 0) {
-     imagesArray = []; //cleaning the array  
+    // imagesArray = []; //cleaning the array  
 
-    var cursor = imageSearch.cursor;
-    // var curPage = cursor.currentPageIndex; // check what page the app is on
-    // for(curPage = 0; curPage < cursor.pages.length; curPage++){
-    // for(curPage = 0; curPage < 2; curPage++){
-    //   imageSearch.gotoPage(curPage);
-
-      var results = imageSearch.results;
-      // console.log(results);            
-
-      for (var j = 0; j < results.length; j++) {
-        imagesArray.push(results[j]);
-      }
-    // }    
+    imagesArray.push(imageSearch.results[0]);
 
     console.log(imagesArray.length);
     searchComplete();
 
   }else{
-    var result = imagesArray[0];
-    var title = result.titleNoFormatting;
-    var content = result.contentNoFormatting;
-
-    var newDiv = '<div class="results">';
-    // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-    newDiv += '<img src="' + result.url + '" class="firstAndLast"/>';  
-    newDiv += '<div class="connections">';
-    newDiv += '<h3>' + title + '</h3>';  
-    // newDiv += '<img src="img/gossip.png"/>';  
-    newDiv += '</div></div>';    
-    newDiv = $.parseHTML(newDiv);
-
-    $('#lastImage').append(newDiv);  
+    var result = imageSearch.results[0];
+    displayLarge(result, '#lastImage');
   }
 }   
 
@@ -150,93 +126,24 @@ function searchComplete() {
   // console.log(imageSearch.results);
   console.log('*****************************************************');
 
-  // For each result write it's title and image to the screen
-  var result = imagesArray[0];
-  var title = result.titleNoFormatting;
-  var content = result.contentNoFormatting;
+  var result = imageSearch.results[0];
+  displayThumb(result);
   
-  if(index == 0 || index == maxSearches){
-
-    var imageWidth, imageHeight, divWidth, divHeight, ratio;
-    imageWidth = result.width;
-    imageHeight = result.height;
-    divWidth = $('#firstImage').width();
-    divHeight = $('#firstImage').height();
-    ratio = 1;
-
-    // alert('imageWidth: ' + imageWidth + ', imageHeight: ' + imageHeight + ', divWidth: ' + divWidth + ', divHeight: ' + divHeight);
-
-    if(imageWidth > divWidth || imageHeight > divHeight){
-      // if(imageWidth > imageHeight){
-        // alert('landscape');
-        ratio = (divWidth - 20) / imageWidth;  
-        var ratio2 = (divHeight - 150) / imageHeight;      
-        if(ratio2 < ratio){
-          ratio = ratio2;
-        }
-      // }else{
-      //   alert('portrait');
-      //   ratio = (divHeight - 100) / imageHeight;      
-      // }
-    }
-    imageWidth *= ratio;
-    imageHeight *= ratio;    
-
-    var newDiv = '<div class="results">';
-    // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-    newDiv += '<img src="' + result.url + '" class="firstAndLast" width="' + imageWidth + '"  height="' + imageHeight + '"/>';  
-    newDiv += '<div class="connections">';
-    newDiv += '<h3>' + title + '</h3>';  
-    // newDiv += '<img src="img/gossip.png"/>';  
-    newDiv += '</div></div>';    
-    newDiv = $.parseHTML(newDiv);
-
-    if(index == 0){
-      $('#firstImage').append(newDiv);  
-    }else{
-      $('#lastImage').append(newDiv);  
-    }
-
-  }else{
-
-    var newDiv = '<div class="results">';
-    // newDiv += '<div class="connections">';
-    // newDiv += '<h3>' + title + '</h3>';  
-    // newDiv += '<img src="img/gossip.png"/>';  
-    // newDiv += '</div>';
-    newDiv += '<b> >> </b>';    
-    newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-    // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
-    newDiv = $.parseHTML(newDiv);
-
-    // var posLeft = Math.random()*(window.innerWidth/3 - 100);
-    // var posTop = Math.random()*(window.innerHeight - 100);
-    // $(newDiv).css({
-    //   'top': posTop,
-    //   'left': posLeft
-    // });    
-    $('#content').append(newDiv);
+  if(index == 0){
+    displayLarge(result, '#firstImage');
+  }else if(index == maxSearches){
+    displayLarge(result, '#lastImage');
   }
 
-  // var scroll = -posLeft + 600;
-  // $('#content').animate({
-  //   'left': scroll
-  // }, 'slow');
-
-  // var scroll = posLeft + 600;
-  // $('#content').animate({
-  //   'scrollLeft': scroll
-  // }, 'slow');
-
-  var query = sliceString(imagesArray[0].titleNoFormatting);
+  var query = sliceString(result.titleNoFormatting);
 
   //Verifying next image title
-  for(imageIndex = 0; imageIndex < imagesArray.length; imageIndex++){
-    console.log('image index: ' + imageIndex + '/' + imagesArray.length);  
+  for(imageIndex = 0; imageIndex < imageSearch.results.length; imageIndex++){
+    console.log('image index: ' + imageIndex + '/' + imageSearch.results.length);  
 
     // Using content instead of title definitely prevents from ending up in dead ends...
-    var originalContent = imagesArray[imageIndex].contentNoFormatting;
-    var originalTitle = imagesArray[imageIndex].titleNoFormatting;
+    var originalContent = imageSearch.results[imageIndex].contentNoFormatting;
+    var originalTitle = imageSearch.results[imageIndex].titleNoFormatting;
     console.log('Original original title: ' + originalTitle);
     var newQuery = sliceString(originalTitle);
     console.log('Checking query: ' + newQuery);
@@ -245,7 +152,7 @@ function searchComplete() {
       console.log('Content already stored.');
 
       //Last resource!!!
-      if(imageIndex == imagesArray.length - 1 && index < maxSearches){
+      if(imageIndex == imageSearch.results.length - 1 && index < maxSearches){
         // newQuery = originalTitle.substr(0, originalTitle.indexOf(' '));
         newQuery = sliceString(originalContent);
         index++;
@@ -263,6 +170,73 @@ function searchComplete() {
       break
     }
   }
+}
+
+function test(){
+  alert('oi');
+}
+
+function displayThumb(result){
+  // For each result write it's title and image to the screen
+  var title = result.titleNoFormatting;
+  var content = result.contentNoFormatting;
+  var divId = index;
+
+  var newDiv = '<div id="' + divId + '" class="results">';
+  newDiv += '<b> >> </b>';    
+  newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+  // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
+  newDiv = $.parseHTML(newDiv);
+  
+  $('#content').append(newDiv);  
+
+  $('#' + divId).click(function(){
+    displayLarge(imagesArray[this.id], '#lastImage');
+    // console.log(imagesArray);
+  });  
+}
+
+function displayLarge(result, container){
+  $(container).html('');
+
+  var title = result.titleNoFormatting;
+  var content = result.contentNoFormatting;    
+
+  var imageWidth, imageHeight, divWidth, divHeight, ratio;
+  imageWidth = result.width;
+  imageHeight = result.height;
+  divWidth = $('#firstImage').width();
+  divHeight = $('#firstImage').height();
+  ratio = 1;
+
+  // alert('imageWidth: ' + imageWidth + ', imageHeight: ' + imageHeight + ', divWidth: ' + divWidth + ', divHeight: ' + divHeight);
+
+  if(imageWidth > divWidth || imageHeight > divHeight){
+    // if(imageWidth > imageHeight){
+      // alert('landscape');
+      ratio = (divWidth - 20) / imageWidth;  
+      var ratio2 = (divHeight - 150) / imageHeight;      
+      if(ratio2 < ratio){
+        ratio = ratio2;
+      }
+    // }else{
+    //   alert('portrait');
+    //   ratio = (divHeight - 100) / imageHeight;      
+    // }
+  }
+  imageWidth *= ratio;
+  imageHeight *= ratio;    
+
+  var newDiv = '<div class="results">';
+  // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+  newDiv += '<img src="' + result.url + '" class="firstAndLast" width="' + imageWidth + '"  height="' + imageHeight + '"/>';  
+  newDiv += '<div class="connections">';
+  newDiv += '<h3>' + title + '</h3>';  
+  // newDiv += '<img src="img/gossip.png"/>';  
+  newDiv += '</div></div>';    
+  newDiv = $.parseHTML(newDiv);
+
+  $(container).append(newDiv);  
 }
 
 /*---------- AUX FUNCTIONS ----------*/

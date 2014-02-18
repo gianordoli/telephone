@@ -1,14 +1,24 @@
+@font-face{
+	font-family: boldFont;
+	src: url(bebasneue_bold.ttf);
+}
+
+@font-face{
+	font-family: bookFont;
+	src: url(bebasneue_book.ttf);
+}
+
 body{
 	padding: 0;
 	border: 0;
 	margin: 0;
 	background-color: hsl(50, 100%, 50%);	
-
+	font-family:boldFont;
 	text-align: center;	
-/*	font-family: 'Raleway', sans-serif;
+	font-family: 'Raleway', sans-serif;
 	font-weight: 400;
 	font-size: 13px;
-	line-height: 18px;*/
+	line-height: 18px;
 	color: black;	
 }
 
@@ -16,6 +26,37 @@ html, body {
 	/*font-size: 13px;*/
     width:      100%;
     height:     100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
+}
+
+p{
+	font-family: 'Raleway', sans-serif;
+	font-weight: 400;	
+}
+.description{
+	font-family: 'Raleway', sans-serif;
+	font-size: 16px;
+	line-height: 0;
+	font-weight: 900;
+}
+.pageTitle, h1{
+	font-size: 64px;
+	line-height: 0;
+	font-weight: 600;
+	font-family:boldFont;
+}
+
+a{
+	text-decoration: none;
+	background-color: black;
+	color: hsl(50, 100%, 50%);	
+	padding: 5px 10px 5px 10px;
 }
 
 #title{
@@ -32,21 +73,20 @@ html, body {
 	text-align: left;
 }
 
-.titleBlock{
+#titleBlock{
 	display: inline-block;
-	width: 50%;	
-	text-align: right;
+	width: 33%;	
+	text-align: center;
+	background-color: black;
+	color: hsl(50, 100%, 50%);
 }
 
-.searchBlock{
+.block{
+	vertical-align: top;
 	display: inline-block;
-	/*width: 20%;	*/
-	text-align: left;
-}
-
-.pageTitle{
-	font-size: 60px;
-	font-weight: 600;
+	width: 33%;	
+	text-align: center;
+	padding-top: 25px;
 }
 
 #firstImage{
@@ -114,6 +154,8 @@ html, body {
 	/*vertical-align: top;*/
 	border: 5px solid black;
 	background-color: hsl(50, 100%, 50%);
+	font-family:boldFont;
+	font-size: 16px;
 	/*background-color: black;*/
 }
 
@@ -127,25 +169,29 @@ html, body {
 .thumb{
 	/*width: 100px;*/
 	/*height: 400px;*/
-	height: 80px;
+	height: 70px;
 	display: inline-block;
 	border: 5px solid black;
 }
 
 input{
-	height: 20px;
-	width: 200px;
+	height: 40px;
+	width: 350px;
 	background-color: white;
 	border: 5px solid black;
-	font-weight: 600;
-	padding: 0 5px 0 5px;
+	font-family: 'Raleway', sans-serif;
+	font-weight: 400;	
+	font-size: 16px;
+	padding: 0 10px 0 10px;
 }
 
 button{
-	height: 30px;
-	width: 40px;
-	font-weight: 600;
+	height: 50px;
+	width: 60px;
+	border: 5px solid black;
+	font-family: 'Raleway', sans-serif;
+	font-weight: 900;	
+	font-size: 13px;
 	color: hsl(50, 100%, 50%);
 	background-color: black;	
-	border: none;
 }
