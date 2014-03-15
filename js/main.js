@@ -1,3 +1,4 @@
+/*---------- FUNCTIONS ----------*/   
 var maxSearches;
 var imageSearch;  //Google API object
 var imagesArray;  //
@@ -144,49 +145,6 @@ function displayThumb(result){
     displayLarge(imagesArray[this.id], '#lastImage');
     // console.log(imagesArray);
   });  
-}
-
-function displayLarge(result, container){
-  $(container).html('');
-
-  var title = result.titleNoFormatting;
-  var content = result.contentNoFormatting;    
-
-  var imageWidth, imageHeight, divWidth, divHeight, ratio;
-  imageWidth = result.width;
-  imageHeight = result.height;
-  divWidth = $('#firstImage').width();
-  divHeight = $('#firstImage').height();
-  ratio = 1;
-
-  // alert('imageWidth: ' + imageWidth + ', imageHeight: ' + imageHeight + ', divWidth: ' + divWidth + ', divHeight: ' + divHeight);
-
-  if(imageWidth > divWidth || imageHeight > divHeight){
-    // if(imageWidth > imageHeight){
-      // alert('landscape');
-      ratio = (divWidth - 20) / imageWidth;  
-      var ratio2 = (divHeight - 150) / imageHeight;      
-      if(ratio2 < ratio){
-        ratio = ratio2;
-      }
-    // }else{
-    //   alert('portrait');
-    //   ratio = (divHeight - 100) / imageHeight;      
-    // }
-  }
-  imageWidth *= ratio;
-  imageHeight *= ratio;    
-
-  var newDiv = '<div class="results">';
-  // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-  newDiv += '<img src="' + result.url + '" class="firstAndLast" width="' + imageWidth + '"  height="' + imageHeight + '"/>';  
-  newDiv += '<div class="connections">';
-  newDiv += '<h3>' + title + '</h3>';  
-  // newDiv += '<img src="img/gossip.png"/>';  
-  newDiv += '</div></div>';    
-  newDiv = $.parseHTML(newDiv);
-
-  $(container).append(newDiv);  
 }
 
 /*---------- AUX FUNCTIONS ----------*/
