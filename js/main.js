@@ -1,7 +1,8 @@
 /*---------- FUNCTIONS ----------*/   
 var maxSearches;
 var imageSearch;  //Google API object
-var imagesArray;  //
+var allResults;   //Google search results objects
+var allImages;    //Image objects
 var index;
 var queries;
 // var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
@@ -24,9 +25,10 @@ $('#okButton').click(function(){
   $('#firstImage').html('');
   $('#content').html('');
   $('#lastImage').html('');
-  maxSearches = 20;
+  maxSearches = 5;
   queries = [];
-  imagesArray = [];
+  allResults = [];
+  allImages = [];
   index = 0;
 
   OnLoad(query);
@@ -59,11 +61,15 @@ function newSearch(str){
 function createArray(){
 
   if (imageSearch.results && imageSearch.results.length > 0) {
-    // imagesArray = []; //cleaning the array  
+    // allResults = []; //cleaning the array  
 
-    imagesArray.push(imageSearch.results[0]);
+    allResults.push(imageSearch.results[0]);
 
-    console.log(imagesArray.length);
+    var imageObj = new Image();
+    imageObj.src = imageSearch.results[0].tbUrl;     
+    allImages.push(imageObj);
+
+    console.log(allResults.length);
     searchComplete();
 
   //no more results found!
@@ -122,29 +128,29 @@ function searchComplete() {
 }
 
 function displayAll(){
-  for(var i = 0; i < imagesArray.length; i++){
-    displayThumb(imagesArray[i]);
-  }
+  setup();
 }
 
 function displayThumb(result){
-  // For each result write it's title and image to the screen
-  var title = result.titleNoFormatting;
-  var content = result.contentNoFormatting;
-  var divId = index;
-
-  var newDiv = '<div id="' + divId + '" class="results">';
-  newDiv += '<b> >> </b>';    
-  newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-  // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
-  newDiv = $.parseHTML(newDiv);
+  // console.log('display thumb');
   
-  $('#content').append(newDiv);  
+  // // For each result write it's title and image to the screen
+  // var title = result.titleNoFormatting;
+  // var content = result.contentNoFormatting;
+  // var divId = index;
 
-  $('#' + divId).click(function(){
-    displayLarge(imagesArray[this.id], '#lastImage');
-    // console.log(imagesArray);
-  });  
+  // var newDiv = '<div id="' + divId + '" class="results">';
+  // newDiv += '<b> >> </b>';    
+  // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
+  // // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
+  // newDiv = $.parseHTML(newDiv);
+  
+  // $('#content').append(newDiv);  
+
+  // $('#' + divId).click(function(){
+  //   displayLarge(allResults[this.id], '#lastImage');
+  //   // console.log(allResults);
+  // });  
 }
 
 /*---------- AUX FUNCTIONS ----------*/

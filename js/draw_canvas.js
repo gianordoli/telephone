@@ -18,8 +18,6 @@ var ctx = canvas.getContext('2d');
 var canvasPosition;
 /*---------------------------------------------*/
 
-setup();
-
 function setup(){
   canvasResize();
   update();
@@ -29,17 +27,23 @@ function update(){
   draw();
 }
 
-function draw(){
+function draw(result){
+  console.log('called draw');
   //Erasing the background
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = 'black';
-  ctx.beginPath();
-  ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height,
-          40, 40, 0, Math.PI*2, false);
-  ctx.fill();  
+  // ctx.fillStyle = 'black';
+  // ctx.beginPath();
+  // ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height,
+  //         40, 40, 0, Math.PI*2, false);
+  // ctx.fill();  
+  
+  for(var i = 0; i < allImages.length; i++){
+    var img = allImages[i];
+    ctx.drawImage(img, Math.random()*canvas.width, Math.random()*canvas.height);
+  }
 
-  request = requestAnimFrame(update);   
+  // request = requestAnimFrame(update);   
 }
 
 function canvasResize(){
