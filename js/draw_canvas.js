@@ -18,12 +18,14 @@ var ctx = canvas.getContext('2d');
 var canvasPosition;
 var canvasImages;
 var margin;
+var arrowSize;
 /*---------------------------------------------*/
 
 function setup(){
   canvasResize();
   canvasImages = [];
-  margin = 20;  
+  margin = 20; 
+  arrowSize = 10; 
   for(var i = 0; i < allImages.length; i++){
     var img = new Object();  //creating object
     initImage(img, i, allResults[i], allImages[i]);      //initializing
@@ -52,19 +54,43 @@ function draw(){
     var obj = canvasImages[i];
     if(i < canvasImages.length - 1){
       var next = canvasImages[i + 1];
-      ctx.strokeStyle = 'black';
-      ctx.beginPath();
-      ctx.moveTo(obj.pos.x, obj.pos.y);
-      ctx.lineTo(next.pos.x, next.pos.y);
-      ctx.stroke();
+      drawConnection(obj, next);
     }
 
-    // console.log(obj);
-    ctx.fillStyle = 'white';
     ctx.drawImage(obj.img, obj.pos.x, obj.pos.y);
   }
 
   request = requestAnimFrame(update);   
+}
+
+function drawConnection(obj, next){
+  var start = { x: obj.pos.x + obj.img.width/2,
+                y: obj.pos.y + obj.img.height/2 };
+  var end = { x: next.pos.x + next.img.width/2,
+              y: next.pos.y + next.img.height/2 };
+  var dist = calculateDistance(start.x, start.y, end.x, end.y);
+  dist -= 80;
+  var angle = Math.atan2(end.y - start.y, end.x - start.x) - Math.PI/2;
+
+    ctx.save();
+      ctx.translate(start.x, start.y);
+      ctx.rotate(angle);
+
+        ctx.strokeStyle = 'black';
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(0, dist);
+        ctx.stroke();
+        
+        ctx.translate(0, dist);
+        ctx.fillStyle = 'black';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(- arrowSize/2, - arrowSize/2);
+        ctx.lineTo(arrowSize/2, - arrowSize/2);
+        ctx.fill();
+      ctx.restore();
 }
 
 function initImage(obj, _index, _result, _img){
@@ -87,6 +113,17 @@ function initImage(obj, _index, _result, _img){
   obj.img = img;
   obj.pos = pos;
 }
+
+var calculateDistance = function(x1, y1, x2, y2){
+  var angle = Math.atan2(y1 - y2, x1 - x2);
+  var dist;
+  if( (y1 - y2) == 0 ){
+    dist = (x1 - x2) / Math.cos( angle );
+  }else{
+    dist = (y1 - y2) / Math.sin( angle );
+  }
+  return dist;
+} 
 
 function canvasResize(){
   screenWidth = window.innerWidth;
