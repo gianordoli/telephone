@@ -19,22 +19,65 @@ var canvasPosition;
 var canvasImages;
 var margin;
 var arrowSize;
+
+var mousePos;
+var isDown;
+var draggedObj;
 /*---------------------------------------------*/
 
 function setup(){
   canvasResize();
   canvasImages = [];
   margin = 20; 
-  arrowSize = 10; 
+  arrowSize = 10;
+  isDown = false;
+  isDragging = false;
   for(var i = 0; i < allImages.length; i++){
     var img = new Object();  //creating object
     initImage(img, i, allResults[i], allImages[i]);      //initializing
     canvasImages.push(img);
   }
+  mousePos = {x: 0, y: 0};
+
+  canvas.addEventListener('mousemove',
+                          function(evt){
+                            getMousePos(evt);
+                          },
+                          false);
+
+    canvas.addEventListener('mousedown',
+                          function(){
+                            isDown = true;
+                          },
+                          false);
+    canvas.addEventListener('mouseup',
+                          function(){
+                            isDown = false;
+                            isDragging = false;
+                            for(var i = 0; i < canvasImages.length; i++){
+                              var obj = canvasImages[i];
+                              obj.isDragged = false;
+                            }
+                          },
+                          false);    
   update();
 }
 
 function update(){
+  for(var i = 0; i < canvasImages.length; i++){
+    if(!isDragging){
+      canvasImages[i].checkHover();
+    }
+
+      canvasImages[i].drag();
+
+  }
+
+  console.log('down: ' + isDown);
+  console.log('drag: ' + isDragging);
+  // if(draggedObj != null){
+  //   console.log();
+  // }
   draw();
 }
 
@@ -60,7 +103,7 @@ function draw(){
     ctx.drawImage(obj.img, obj.pos.x, obj.pos.y);
   }
 
-  request = requestAnimFrame(update);   
+  // request = requestAnimFrame(update);   
 }
 
 function drawConnection(obj, next){
@@ -93,6 +136,27 @@ function drawConnection(obj, next){
       ctx.restore();
 }
 
+function checkHover(){
+  if(mousePos.x > this.pos.x && mousePos.x < this.pos.x + this.img.width &&
+     mousePos.y > this.pos.y && mousePos.y < this.pos.y + this.img.height ){
+    // console.log(this.img.src);
+    if(isDown){
+      this.isDragged = true;
+      isDragging = true;
+    }
+  }
+}
+
+function drag(){
+  if(this.isDragged){
+    var x, y;
+    x = mousePos.x;
+    y = mousePos.y;
+    this.pos.x = x;
+    this.pos.y = y;
+  }
+}
+
 function initImage(obj, _index, _result, _img){
   var index = _index;
   var result = _result;
@@ -108,10 +172,13 @@ function initImage(obj, _index, _result, _img){
     pos = {x: margin + Math.random() * (canvas.width - img.width - margin),
            y: margin + Math.random() * (canvas.height - img.height - margin) }
   }  
-
+  obj.index = index;
   obj.result = result;
   obj.img = img;
   obj.pos = pos;
+  obj.checkHover = checkHover;
+  obj.drag = drag;
+  obj.isDragged = false;
 }
 
 var calculateDistance = function(x1, y1, x2, y2){
@@ -135,4 +202,14 @@ function canvasResize(){
   canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position
   canvas.width = screenWidth - 10;
   canvas.height = screenHeight - marginTop - 10;
+  canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
+  console.log(canvasPosition);
 } 
+
+function getMousePos(evt){
+  mousePos.x = evt.clientX - canvasPosition.left;
+  mousePos.y = evt.clientY - canvasPosition.top;
+  //You have to use clientX! .x doesn't work with Firefox!
+  // console.log(mousePos);
+  update();
+}
