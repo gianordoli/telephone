@@ -1,6 +1,6 @@
 var maxSearches;
-var imageSearch;
-var imagesArray;
+var imageSearch;  //Google API object
+var imagesArray;  //
 var index;
 var queries;
 // var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
@@ -29,58 +29,7 @@ $('#okButton').click(function(){
   index = 0;
 
   OnLoad(query);
-  positionDivs();
-
 });
-
-function positionDivs(){
-  var screenWidth = window.innerWidth;
-  var screenHeight = window.innerHeight;
-
-  var divWidth, divHeight, divLeft, divTop;
-  
-  divTop = $('#title').height() + 10;  
-  divWidth = screenWidth/3 - 5;
-  divHeight = screenHeight - divTop;
-
-  $('#firstImage').css({
-    'width': divWidth,
-    'height': divHeight,
-    'top': divTop
-  }); 
-
-  divLeft = divWidth;
-  // divWidth *= 2; 
-
-  $('#divide1').css({
-    'height': divHeight,
-    'left': divLeft,
-    'top': divTop - 10
-  }); 
-
-  $('#content').css({
-    'width': divWidth,
-    'height': divHeight,
-    'left': divLeft,
-    'top': divTop
-  }); 
-
-  divLeft += divWidth;  
-  // divWidth /= 2;
-
-  $('#divide2').css({
-    'height': divHeight,
-    'left': divLeft,
-    'top': divTop - 10
-  }); 
-  $('#lastImage').css({
-    'width': divWidth,
-    'height': divHeight,
-    'left': divLeft,
-    'top' : divTop
-  }); 
-
-}
 
 // 4: Search parameters
 function OnLoad(str) {
@@ -94,17 +43,18 @@ function OnLoad(str) {
   // complete.  The imageSearch object will have results in it.
   // imageSearch.setSearchCompleteCallback(this, searchComplete, null);
   imageSearch.setSearchCompleteCallback(this, createArray, null);
-
+  
   newSearch(str);
-}         
+}  
 
 // 5: Executes the search
-function newSearch(query){
+function newSearch(str){
+  imageSearch.execute(str);
   console.log("Calling new search");
-  imageSearch.execute(query);
-}
+}       
 
-// 6: Looping through all 8 pages and storing each result in a single array
+
+// 6: Storing each result in a single array
 function createArray(){
 
   if (imageSearch.results && imageSearch.results.length > 0) {
@@ -115,9 +65,10 @@ function createArray(){
     console.log(imagesArray.length);
     searchComplete();
 
+  //no more results found!
   }else{
     var result = imageSearch.results[0];
-    displayLarge(result, '#lastImage');
+    displayAll();
   }
 }   
 
@@ -126,14 +77,11 @@ function searchComplete() {
   // console.log(imageSearch.results);
   console.log('*****************************************************');
 
-  var result = imageSearch.results[0];
-  displayThumb(result);
-  
-  if(index == 0){
-    displayLarge(result, '#firstImage');
-  }else if(index == maxSearches){
-    displayLarge(result, '#lastImage');
+  if(index == maxSearches){
+    displayAll();
   }
+  
+  var result = imageSearch.results[0];
 
   var query = sliceString(result.titleNoFormatting);
 
@@ -172,8 +120,10 @@ function searchComplete() {
   }
 }
 
-function test(){
-  alert('oi');
+function displayAll(){
+  for(var i = 0; i < imagesArray.length; i++){
+    displayThumb(imagesArray[i]);
+  }
 }
 
 function displayThumb(result){
