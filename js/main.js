@@ -2,7 +2,6 @@ var maxSearches;
 var imageSearch;
 var imagesArray;
 var index;
-var mainQuery;
 var queries;
 // var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.', ' '];
 // var delimiters = ['wiki', '!', '?', '_', '|', '»', '-', '(', ',', ':', '.'];  
@@ -16,20 +15,10 @@ google.load('search', '1');
 // 3: Assign the OnLoad function as the callback for the Google search module
 //google.setOnLoadCallback(OnLoad);
 
-$(document).ready(function(){
-  
-  resetVars();
-  positionDivs();
-
-});
-
 $('#okButton').click(function(){
-  resetVars();
-  mainQuery = $('#searchBox').val();
-  OnLoad();
-});
-
-function resetVars(){
+  var query = $('#searchBox').val();
+  console.log('Calling function: ' + query);
+  
   // Clears results div
   $('#firstImage').html('');
   $('#content').html('');
@@ -38,7 +27,11 @@ function resetVars(){
   queries = [];
   imagesArray = [];
   index = 0;
-}
+
+  OnLoad(query);
+  positionDivs();
+
+});
 
 function positionDivs(){
   var screenWidth = window.innerWidth;
@@ -90,8 +83,7 @@ function positionDivs(){
 }
 
 // 4: Search parameters
-function OnLoad() {
-  console.log('Calling function: ' + mainQuery);
+function OnLoad(str) {
 
   // Create an Image Search instance.
   imageSearch = new google.search.ImageSearch();
@@ -102,17 +94,18 @@ function OnLoad() {
   // complete.  The imageSearch object will have results in it.
   // imageSearch.setSearchCompleteCallback(this, searchComplete, null);
   imageSearch.setSearchCompleteCallback(this, createArray, null);
+
+  newSearch(str);
 }         
 
 // 5: Executes the search
-function newSearch(){
-    console.log('Calling search: ' + mainQuery);
-    imageSearch.execute(mainQuery);
+function newSearch(query){
+ 
+  imageSearch.execute(query);
 }
 
 // 6: Looping through all 8 pages and storing each result in a single array
 function createArray(){
-
 
   if (imageSearch.results && imageSearch.results.length > 0) {
     // imagesArray = []; //cleaning the array  
