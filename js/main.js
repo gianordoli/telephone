@@ -25,7 +25,7 @@ $('#okButton').click(function(){
   $('#firstImage').html('');
   $('#content').html('');
   $('#lastImage').html('');
-  maxSearches = 5;
+  maxSearches = 20;
   queries = [];
   allResults = [];
   allImages = [];
@@ -128,7 +128,10 @@ function searchComplete() {
 }
 
 function displayAll(){
-  setup();
+  //Wait for the last image to be loaded before calling setup
+  allImages[allImages.length - 1].onload = function() {
+    setup();
+  };
 }
 
 function displayThumb(result){

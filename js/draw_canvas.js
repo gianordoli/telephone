@@ -150,8 +150,8 @@ function checkHover(){
 function drag(){
   if(this.isDragged){
     var x, y;
-    x = mousePos.x;
-    y = mousePos.y;
+    x = mousePos.x - this.img.width/2;
+    y = mousePos.y - this.img.height/2;
     this.pos.x = x;
     this.pos.y = y;
   }
