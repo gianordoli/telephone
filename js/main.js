@@ -100,7 +100,7 @@ function OnLoad(str) {
 
 // 5: Executes the search
 function newSearch(query){
- 
+  console.log("Calling new search");
   imageSearch.execute(query);
 }
 
