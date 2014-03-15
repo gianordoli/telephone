@@ -81,6 +81,12 @@ a{
 	color: hsl(50, 100%, 50%);
 }
 
+canvas{
+	margin: 0;
+	border: 0;
+	padding: 0;
+}
+
 .block{
 	vertical-align: top;
 	display: inline-block;
