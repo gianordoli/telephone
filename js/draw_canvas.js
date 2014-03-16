@@ -28,8 +28,8 @@ var draggedObj;
 function setup(){
   canvasResize();
   canvasImages = [];
-  margin = 20; 
-  arrowSize = 10;
+  margin = 100; 
+  arrowSize = 30;
   isDown = false;
   isDragging = false;
   for(var i = 0; i < allImages.length; i++){
@@ -84,24 +84,17 @@ function update(){
 function draw(){
   // console.log('called draw');
   //Erasing the background
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-  // ctx.fillStyle = 'black';
-  // ctx.fillRect(0, 0, canvas.width, canvas.height);
-  // ctx.beginPath();
-  // ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height,
-  //         40, 40, 0, Math.PI*2, false);
-  // ctx.fill();  
-  
-  for(var i = 0; i < canvasImages.length; i++){
-    var obj = canvasImages[i];
-    if(i < canvasImages.length - 1){
-      var next = canvasImages[i + 1];
-      drawConnection(obj, next);
+    for(var i = 0; i < canvasImages.length; i++){
+      var obj = canvasImages[i];
+      if(i < canvasImages.length - 1){
+        var next = canvasImages[i + 1];
+        drawConnection(obj, next);
+      }
+
+      ctx.drawImage(obj.img, obj.pos.x, obj.pos.y);
     }
-
-    ctx.drawImage(obj.img, obj.pos.x, obj.pos.y);
-  }
 
   // request = requestAnimFrame(update);   
 }
@@ -120,6 +113,7 @@ function drawConnection(obj, next){
       ctx.rotate(angle);
 
         ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;        
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(0, dist);
@@ -127,7 +121,6 @@ function drawConnection(obj, next){
         
         ctx.translate(0, dist);
         ctx.fillStyle = 'black';
-        ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(0, 0);
         ctx.lineTo(- arrowSize/2, - arrowSize/2);
@@ -162,16 +155,27 @@ function initImage(obj, _index, _result, _img){
   var result = _result;
   var img = _img;
   var pos = new Object();
-  if(_index == 0){
-    pos = {x: margin,
-           y: margin}
-  }else if(_index == allImages.length - 1){
-    pos = {x: canvas.width - img.width - margin,
-           y: canvas.height - img.height - margin}
-  }else{
-    pos = {x: margin + Math.random() * (canvas.width - img.width - margin),
-           y: margin + Math.random() * (canvas.height - img.height - margin) }
-  }  
+
+  //First image
+  // if(_index == 0){
+  //   pos = {x: img.width/2,
+  //          y: img.height/2 }
+
+  //Last image
+  // }else if(_index == allImages.length - 1){
+  //   pos = {x: canvas.width - img.width - margin - img.width/2,
+  //          y: canvas.height - img.height - margin - img.height/2}
+  // }else{
+    // pos = {x: margin + Math.random() * (canvas.width - img.width - margin),
+    //        y: margin + Math.random() * (canvas.height - img.height - margin) }
+    pos = {x: margin + Math.floor(index / 3) * 200 - img.width/2,
+           y: 0}
+           if(Math.floor(index / 3) % 2 == 0){
+            pos.y = margin + ((index % 3) * 200) - img.height/2;
+           }else{
+            pos.y = margin + ((2 * 200) - ((index % 3) * 200)) - img.height/2;
+           }
+  // }  
   obj.index = index;
   obj.result = result;
   obj.img = img;
