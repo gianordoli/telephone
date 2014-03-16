@@ -72,19 +72,12 @@ function setup(){
 
 function update(){
   for(var i = 0; i < canvasImages.length; i++){
-    // if(!isDragging){
-    //   canvasImages[i].checkHover();
-    // }
-
-    //   canvasImages[i].drag();
     canvasImages[i].updateImage();
   }
 
-  console.log('down: ' + isDown);
-  console.log('drag: ' + isDragging);
-  // if(draggedObj != null){
-  //   console.log();
-  // }
+  // console.log('down: ' + isDown);
+  // console.log('drag: ' + isDragging);
+
   draw();
 }
 
@@ -99,11 +92,16 @@ function draw(){
         var next = canvasImages[i + 1];
         drawConnection(obj, next);
       }
-
+      
+      // console.log(obj.isHovered);
+      if(obj.isHovered){
+        // ctx.drawImage(obj.img, obj.pos.x, obj.pos.y, obj.img.width*2, obj.img.height*2);
+        console.log(obj.result.titleNoFormatting);
+      }
       ctx.drawImage(obj.img, obj.pos.x, obj.pos.y);
     }
 
-  // request = requestAnimFrame(update);   
+  request = requestAnimFrame(update);   
 }
 
 function drawConnection(obj, next){
@@ -156,6 +154,7 @@ function initImage(obj, _index, _result, _img){
   obj.result = result;
   obj.img = img;
   obj.pos = pos;
+  obj.isHovered = false;
   obj.isDragged = false;  
   
   //Functions
@@ -169,10 +168,17 @@ function updateImage(){
     if(mousePos.x > this.pos.x && mousePos.x < this.pos.x + this.img.width &&
        mousePos.y > this.pos.y && mousePos.y < this.pos.y + this.img.height ){
       // console.log(this.img.src);
+      this.isHovered = true;
+      // console.log(isHovered);
+
+      //Check click
       if(isDown){
         this.isDragged = true;
         isDragging = true;
       }
+
+    }else{
+      this.isHovered = false;
     }
   }
 
@@ -208,7 +214,7 @@ function canvasResize(){
   canvas.width = screenWidth - 10;
   canvas.height = screenHeight - marginTop - 10;
   canvasPosition = canvas.getBoundingClientRect(); // Gets the canvas position again!
-  console.log(canvasPosition);
+  // console.log(canvasPosition);
 } 
 
 function getMousePos(evt){
@@ -216,5 +222,5 @@ function getMousePos(evt){
   mousePos.y = evt.clientY - canvasPosition.top;
   //You have to use clientX! .x doesn't work with Firefox!
   // console.log(mousePos);
-  update();
+  // update();
 }
