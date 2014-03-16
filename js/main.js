@@ -50,7 +50,7 @@ function start(){
   $('#firstImage').html('');
   $('#content').html('');
   $('#lastImage').html('');
-  maxSearches = 10;
+  maxSearches = 20;
   queries = [];
   allResults = [];
   allImages = [];
@@ -71,9 +71,10 @@ function newSearch(str){
 
 // 6: Storing each result in a single array
 function createArray(){
+  console.log('Creating array...');
 
   if (imageSearch.results && imageSearch.results.length > 0) {
-    // allResults = []; //cleaning the array  
+    console.log('Results found');
 
     allResults.push(imageSearch.results[0]);
 
@@ -86,7 +87,7 @@ function createArray(){
 
   //no more results found!
   }else{
-    var result = imageSearch.results[0];
+    console.log('No results found');
     displayAll();
   }
 }   
@@ -141,10 +142,11 @@ function searchComplete() {
 }
 
 function displayAll(){
+  console.log('Calling images display...');
   //Wait for the last image to be loaded before calling setup
-  allImages[allImages.length - 1].onload = function() {
+  // allImages[allImages.length - 1].onload = function() {
     setup();
-  };
+  // };
 }
 
 /*---------- AUX FUNCTIONS ----------*/
