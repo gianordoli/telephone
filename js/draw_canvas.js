@@ -86,29 +86,41 @@ function draw(){
   //Erasing the background
   ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
+    //Draw images
     for(var i = 0; i < canvasImages.length; i++){
       var obj = canvasImages[i];
       if(i < canvasImages.length - 1){
         var next = canvasImages[i + 1];
         drawConnection(obj, next);
       }
-      
+
       // console.log(obj.isHovered);
       if(obj.isHovered){
-        // ctx.drawImage(obj.img, obj.pos.x, obj.pos.y, obj.img.width*2, obj.img.height*2);
-        console.log(obj.result.titleNoFormatting);
+        ctx.fillStyle = parseHslaColor(0, 0, 0, 0.5);
+        ctx.fillRect(obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2,
+                     obj.img.width, obj.img.height);        
+        ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2 - 10, obj.pos.y - obj.img.height/2 - 10);
+      }else{
+        ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2);  
       }
-      ctx.drawImage(obj.img, obj.pos.x, obj.pos.y);
     }
 
-  request = requestAnimFrame(update);   
+    //Draw description
+    for(var i = 0; i < canvasImages.length; i++){
+      var obj = canvasImages[i];
+      if(obj.isHovered){
+        drawDescription(obj);
+      }
+    }
+
+  // request = requestAnimFrame(update);   
 }
 
 function drawConnection(obj, next){
-  var start = { x: obj.pos.x + obj.img.width/2,
-                y: obj.pos.y + obj.img.height/2 };
-  var end = { x: next.pos.x + next.img.width/2,
-              y: next.pos.y + next.img.height/2 };
+  var start = { x: obj.pos.x,
+                y: obj.pos.y };
+  var end = { x: next.pos.x,
+              y: next.pos.y };
   var dist = calculateDistance(start.x, start.y, end.x, end.y);
   dist -= 80;
   var angle = Math.atan2(end.y - start.y, end.x - start.x) - Math.PI/2;
@@ -134,6 +146,23 @@ function drawConnection(obj, next){
       ctx.restore();
 }
 
+function drawDescription(obj){
+  ctx.font="12px Arial";
+  var txt = obj.result.titleNoFormatting;
+  var textWidth = ctx.measureText(txt).width;
+  var descPos = {x: obj.pos.x - textWidth/2,
+                 y: obj.pos.y + obj.img.height/2 }
+  // console.log(textWidth);
+  ctx.fillStyle = 'white';
+  ctx.strokeStyle = 'black';
+  ctx.fillRect(descPos.x, descPos.y, textWidth + 10, 20);
+  ctx.strokeRect(descPos.x, descPos.y, textWidth + 10, 20);
+
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = 'black';
+  ctx.fillText(txt, descPos.x + 4, descPos.y + 4);
+}
+
 /*---------------- IMAGE OBJECTS --------------*/
 function initImage(obj, _index, _result, _img){
   var index = _index;
@@ -141,12 +170,12 @@ function initImage(obj, _index, _result, _img){
   var img = _img;
   var pos = new Object();
 
-  pos = {x: margin + Math.floor(index / 3) * 200 - img.width/2,
+  pos = {x: margin + Math.floor(index / 3) * 200,
          y: 0}
          if(Math.floor(index / 3) % 2 == 0){
-          pos.y = margin + ((index % 3) * 200) - img.height/2;
+          pos.y = margin + ((index % 3) * 200);
          }else{
-          pos.y = margin + ((2 * 200) - ((index % 3) * 200)) - img.height/2;
+          pos.y = margin + ((2 * 200) - ((index % 3) * 200));
          }
 
   //Vars
@@ -165,8 +194,8 @@ function updateImage(){
   //Check Hover
   //If the mouse is not dragging any object...
   if(!isDragging){
-    if(mousePos.x > this.pos.x && mousePos.x < this.pos.x + this.img.width &&
-       mousePos.y > this.pos.y && mousePos.y < this.pos.y + this.img.height ){
+    if(mousePos.x > this.pos.x - this.img.width/2 && mousePos.x < this.pos.x + this.img.width/2 &&
+       mousePos.y > this.pos.y - this.img.height/2 && mousePos.y < this.pos.y + this.img.height/2 ){
       // console.log(this.img.src);
       this.isHovered = true;
       // console.log(isHovered);
@@ -185,8 +214,8 @@ function updateImage(){
   //Drag
   if(this.isDragged){
     var x, y;
-    x = mousePos.x - this.img.width/2;
-    y = mousePos.y - this.img.height/2;
+    x = mousePos.x;
+    y = mousePos.y;
     this.pos.x = x;
     this.pos.y = y;
   }  
@@ -217,10 +246,16 @@ function canvasResize(){
   // console.log(canvasPosition);
 } 
 
+var parseHslaColor = function(h, s, l, a){
+  var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
+  //console.log('called calculateAngle function');
+  return myHslColor;
+}
+
 function getMousePos(evt){
   mousePos.x = evt.clientX - canvasPosition.left;
   mousePos.y = evt.clientY - canvasPosition.top;
   //You have to use clientX! .x doesn't work with Firefox!
   // console.log(mousePos);
-  // update();
+  update();
 }
