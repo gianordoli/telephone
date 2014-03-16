@@ -12,19 +12,26 @@ window.requestAnimFrame = (function(callback) {
 })();
 /*---------------------------------------------*/
 
+
 /*-------------- CANVAS VARIABLES -------------*/
 var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 var canvasPosition;
-var canvasImages;
 var margin;
+
+
+/*---------------- IMAGE OBJECTS --------------*/
+var canvasImages;
 var arrowSize;
 
+
+/*------------------ INTERACTION --------------*/
 var mousePos;
 var isDown;
 var draggedObj;
-/*---------------------------------------------*/
 
+
+/*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(){
   canvasResize();
   canvasImages = [];
@@ -65,12 +72,12 @@ function setup(){
 
 function update(){
   for(var i = 0; i < canvasImages.length; i++){
-    if(!isDragging){
-      canvasImages[i].checkHover();
-    }
+    // if(!isDragging){
+    //   canvasImages[i].checkHover();
+    // }
 
-      canvasImages[i].drag();
-
+    //   canvasImages[i].drag();
+    canvasImages[i].updateImage();
   }
 
   console.log('down: ' + isDown);
@@ -129,60 +136,54 @@ function drawConnection(obj, next){
       ctx.restore();
 }
 
-function checkHover(){
-  if(mousePos.x > this.pos.x && mousePos.x < this.pos.x + this.img.width &&
-     mousePos.y > this.pos.y && mousePos.y < this.pos.y + this.img.height ){
-    // console.log(this.img.src);
-    if(isDown){
-      this.isDragged = true;
-      isDragging = true;
-    }
-  }
-}
-
-function drag(){
-  if(this.isDragged){
-    var x, y;
-    x = mousePos.x - this.img.width/2;
-    y = mousePos.y - this.img.height/2;
-    this.pos.x = x;
-    this.pos.y = y;
-  }
-}
-
+/*---------------- IMAGE OBJECTS --------------*/
 function initImage(obj, _index, _result, _img){
   var index = _index;
   var result = _result;
   var img = _img;
   var pos = new Object();
 
-  //First image
-  // if(_index == 0){
-  //   pos = {x: img.width/2,
-  //          y: img.height/2 }
+  pos = {x: margin + Math.floor(index / 3) * 200 - img.width/2,
+         y: 0}
+         if(Math.floor(index / 3) % 2 == 0){
+          pos.y = margin + ((index % 3) * 200) - img.height/2;
+         }else{
+          pos.y = margin + ((2 * 200) - ((index % 3) * 200)) - img.height/2;
+         }
 
-  //Last image
-  // }else if(_index == allImages.length - 1){
-  //   pos = {x: canvas.width - img.width - margin - img.width/2,
-  //          y: canvas.height - img.height - margin - img.height/2}
-  // }else{
-    // pos = {x: margin + Math.random() * (canvas.width - img.width - margin),
-    //        y: margin + Math.random() * (canvas.height - img.height - margin) }
-    pos = {x: margin + Math.floor(index / 3) * 200 - img.width/2,
-           y: 0}
-           if(Math.floor(index / 3) % 2 == 0){
-            pos.y = margin + ((index % 3) * 200) - img.height/2;
-           }else{
-            pos.y = margin + ((2 * 200) - ((index % 3) * 200)) - img.height/2;
-           }
-  // }  
+  //Vars
   obj.index = index;
   obj.result = result;
   obj.img = img;
   obj.pos = pos;
-  obj.checkHover = checkHover;
-  obj.drag = drag;
-  obj.isDragged = false;
+  obj.isDragged = false;  
+  
+  //Functions
+  obj.updateImage = updateImage;
+}
+
+function updateImage(){
+  //Check Hover
+  //If the mouse is not dragging any object...
+  if(!isDragging){
+    if(mousePos.x > this.pos.x && mousePos.x < this.pos.x + this.img.width &&
+       mousePos.y > this.pos.y && mousePos.y < this.pos.y + this.img.height ){
+      // console.log(this.img.src);
+      if(isDown){
+        this.isDragged = true;
+        isDragging = true;
+      }
+    }
+  }
+
+  //Drag
+  if(this.isDragged){
+    var x, y;
+    x = mousePos.x - this.img.width/2;
+    y = mousePos.y - this.img.height/2;
+    this.pos.x = x;
+    this.pos.y = y;
+  }  
 }
 
 var calculateDistance = function(x1, y1, x2, y2){
