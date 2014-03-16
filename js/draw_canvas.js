@@ -27,8 +27,9 @@ var arrowSize;
 
 /*------------------ INTERACTION --------------*/
 var mousePos;
-var isDown;
+// var isDown;
 // var draggedObj;
+var openUrl;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(){
@@ -36,7 +37,7 @@ function setup(){
   canvasImages = [];
   margin = 100; 
   arrowSize = 30;
-  isDown = false;
+  // isDown = false;
   isDragging = false;
   for(var i = 0; i < allImages.length; i++){
     var imgObj = new Object();  //creating object
@@ -51,14 +52,15 @@ function setup(){
                           },
                           false);
 
-    canvas.addEventListener('mousedown',
-                          function(){
-                            isDown = true;
-                          },
-                          false);
+    // canvas.addEventListener('mousedown',
+    //                       function(){
+    //                         isDown = true;
+    //                       },
+    //                       false);
     canvas.addEventListener('mouseup',
                           function(){
-                            isDown = false;
+                            // isDown = false;
+                            window.open(openUrl, '_blank');
                             // isDragging = false;
                             // for(var i = 0; i < canvasImages.length; i++){
                             //   var obj = canvasImages[i];
@@ -212,10 +214,11 @@ function updateImage(){
       // console.log(isHovered);
 
       //Check click
-      if(isDown){
+      // if(isDown){
         // this.isDragged = true;
         // isDragging = true;
-      }
+      // }
+      openUrl = this.result.originalContextUrl;
 
     }else{
       this.isHovered = false;
