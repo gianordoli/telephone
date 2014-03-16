@@ -30,7 +30,6 @@ var mousePos;
 var isDown;
 var draggedObj;
 
-
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(){
   canvasResize();
@@ -40,9 +39,9 @@ function setup(){
   isDown = false;
   isDragging = false;
   for(var i = 0; i < allImages.length; i++){
-    var img = new Object();  //creating object
-    initImage(img, i, allResults[i], allImages[i]);      //initializing
-    canvasImages.push(img);
+    var imgObj = new Object();  //creating object
+    initImage(imgObj, i, allResults[i], allImages[i]);      //initializing
+    canvasImages.push(imgObj);
   }
   mousePos = {x: 0, y: 0};
 

@@ -118,6 +118,7 @@ function searchComplete() {
       queries.push(newQuery);
       console.log(queries);
       if(index < maxSearches){
+
         console.log('--------------------------------' + index);
         index++;
         newSearch(newQuery);
@@ -132,28 +133,6 @@ function displayAll(){
   allImages[allImages.length - 1].onload = function() {
     setup();
   };
-}
-
-function displayThumb(result){
-  // console.log('display thumb');
-  
-  // // For each result write it's title and image to the screen
-  // var title = result.titleNoFormatting;
-  // var content = result.contentNoFormatting;
-  // var divId = index;
-
-  // var newDiv = '<div id="' + divId + '" class="results">';
-  // newDiv += '<b> >> </b>';    
-  // newDiv += '<img src="' + result.tbUrl + '" class="thumb"/>';
-  // // newDiv += '<img src="' + result.url + '" class="thumb"/></div>';  
-  // newDiv = $.parseHTML(newDiv);
-  
-  // $('#content').append(newDiv);  
-
-  // $('#' + divId).click(function(){
-  //   displayLarge(allResults[this.id], '#lastImage');
-  //   // console.log(allResults);
-  // });  
 }
 
 /*---------- AUX FUNCTIONS ----------*/
