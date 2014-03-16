@@ -18,7 +18,9 @@ var canvas = document.getElementById('myCanvas');
 var ctx = canvas.getContext('2d');
 var canvasPosition;
 var margin;
-
+var nColumns;
+var nLines;
+var xSpacing;
 
 /*---------------- IMAGE OBJECTS --------------*/
 var canvasImages;
@@ -38,7 +40,14 @@ function setup(){
   margin = 100; 
   arrowSize = 30;
   // isDown = false;
-  isDragging = false;
+  // isDragging = false;
+
+  nLines = 3;
+  nColumns = Math.ceil(allImages.length/nLines);
+  xSpacing = (canvas.width - (2 * margin)) / (nColumns - 1);
+  // console.log(nColumns);
+  // console.log(xSpacing);
+
   for(var i = 0; i < allImages.length; i++){
     var imgObj = new Object();  //creating object
     initImage(imgObj, i, allResults[i], allImages[i]);      //initializing
@@ -114,7 +123,7 @@ function draw(){
   //Draw description
   for(var i = 0; i < canvasImages.length; i++){
     var obj = canvasImages[i];
-    if(obj.isHovered){
+    if(obj.isHovered || obj.index == 0 || obj.index == canvasImages.length - 1){
       drawDescription(obj);
     }
   }
@@ -150,12 +159,13 @@ function drawConnection(obj, next){
         ctx.stroke();
         
         ctx.translate(0, dist);
-        ctx.fillStyle = 'black';
+        // ctx.fillStyle = 'black';
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(- arrowSize/2, - arrowSize/2);
+        ctx.moveTo(- arrowSize/2, - arrowSize/2);
+        ctx.lineTo(0, 0);
         ctx.lineTo(arrowSize/2, - arrowSize/2);
-        ctx.fill();
+        // ctx.fill();
+        ctx.stroke();
       ctx.restore();
 }
 
@@ -183,7 +193,7 @@ function initImage(obj, _index, _result, _img){
   var img = _img;
   var pos = new Object();
 
-  pos = {x: margin + Math.floor(index / 3) * 200,
+  pos = {x: margin + Math.floor(index / 3) * xSpacing,
          y: 0}
          if(Math.floor(index / 3) % 2 == 0){
           pos.y = margin + ((index % 3) * 200);
@@ -206,7 +216,7 @@ function initImage(obj, _index, _result, _img){
 function updateImage(){
   //Check Hover
   //If the mouse is not dragging any object...
-  if(!isDragging){
+  // if(!isDragging){
     if(mousePos.x > this.pos.x - this.img.width/2 && mousePos.x < this.pos.x + this.img.width/2 &&
        mousePos.y > this.pos.y - this.img.height/2 && mousePos.y < this.pos.y + this.img.height/2 ){
       // console.log(this.img.src);
@@ -223,7 +233,7 @@ function updateImage(){
     }else{
       this.isHovered = false;
     }
-  }
+  // }
 
   //Drag
   // if(this.isDragged){

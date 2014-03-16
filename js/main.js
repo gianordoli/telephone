@@ -50,7 +50,7 @@ function start(){
   $('#firstImage').html('');
   $('#content').html('');
   $('#lastImage').html('');
-  maxSearches = 20;
+  maxSearches = 10;
   queries = [];
   allResults = [];
   allImages = [];
