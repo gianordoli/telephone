@@ -15,27 +15,10 @@ var delimiters = ['-', '!', '?', '_', '|', '»', '(', ',', ';', '.', 'wiki'];
 google.load('search', '1');
   
 // 3: Assign the OnLoad function as the callback for the Google search module
-//google.setOnLoadCallback(OnLoad);
+google.setOnLoadCallback(searchSetup);
 
-$('#okButton').click(function(){
-  var query = $('#searchBox').val();
-  console.log('Calling function: ' + query);
-  
-  // Clears results div
-  $('#firstImage').html('');
-  $('#content').html('');
-  $('#lastImage').html('');
-  maxSearches = 20;
-  queries = [];
-  allResults = [];
-  allImages = [];
-  index = 0;
-
-  OnLoad(query);
-});
-
-// 4: Search parameters
-function OnLoad(str) {
+//API setup
+function searchSetup() {
 
   // Create an Image Search instance.
   imageSearch = new google.search.ImageSearch();
@@ -46,9 +29,38 @@ function OnLoad(str) {
   // complete.  The imageSearch object will have results in it.
   // imageSearch.setSearchCompleteCallback(this, searchComplete, null);
   imageSearch.setSearchCompleteCallback(this, createArray, null);
-  
-  newSearch(str);
 }  
+
+// 4: Triggers the first search / Cleans up whatever has been searched before 
+$('#searchBox').keypress(function(e) {
+  if (e.keyCode == 13) {
+      start();
+  }
+});
+
+$('#okButton').click(function(){
+  start();
+});
+
+function start(){
+  var query = $('#searchBox').val();
+  console.log('Calling function: ' + query);
+  
+  // Clears results div
+  $('#firstImage').html('');
+  $('#content').html('');
+  $('#lastImage').html('');
+  maxSearches = 10;
+  queries = [];
+  allResults = [];
+  allImages = [];
+  index = 0;
+
+  // searchSetup(query);  
+  newSearch(query);
+}
+
+
 
 // 5: Executes the search
 function newSearch(str){

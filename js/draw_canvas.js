@@ -85,32 +85,44 @@ function draw(){
   //Erasing the background
   ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-    //Draw images
-    for(var i = 0; i < canvasImages.length; i++){
-      var obj = canvasImages[i];
-      if(i < canvasImages.length - 1){
-        var next = canvasImages[i + 1];
-        drawConnection(obj, next);
-      }
+  var isHovering = false;
 
-      // console.log(obj.isHovered);
-      if(obj.isHovered){
-        ctx.fillStyle = parseHslaColor(0, 0, 0, 0.5);
-        ctx.fillRect(obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2,
-                     obj.img.width, obj.img.height);        
-        ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2 - 10, obj.pos.y - obj.img.height/2 - 10);
-      }else{
-        ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2);  
-      }
+  //Draw images
+  for(var i = 0; i < canvasImages.length; i++){
+    var obj = canvasImages[i];
+    if(i < canvasImages.length - 1){
+      var next = canvasImages[i + 1];
+      drawConnection(obj, next);
     }
 
-    //Draw description
-    for(var i = 0; i < canvasImages.length; i++){
-      var obj = canvasImages[i];
-      if(obj.isHovered){
-        drawDescription(obj);
-      }
+    // console.log(obj.isHovered);
+    if(obj.isHovered){
+
+      isHovering = true;
+
+      ctx.fillStyle = parseHslaColor(0, 0, 0, 0.5);
+      ctx.fillRect(obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2,
+                   obj.img.width, obj.img.height);        
+      ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2 - 10, obj.pos.y - obj.img.height/2 - 10);
+    }else{
+      ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2);  
     }
+  }
+
+  //Draw description
+  for(var i = 0; i < canvasImages.length; i++){
+    var obj = canvasImages[i];
+    if(obj.isHovered){
+      drawDescription(obj);
+    }
+  }
+
+  //Change cursor
+  if(isHovering){
+    canvas.style.cursor = 'pointer';  
+  }else{
+    canvas.style.cursor = 'default';  
+  }
 
   // request = requestAnimFrame(update);   
 }
