@@ -28,7 +28,7 @@ var arrowSize;
 /*------------------ INTERACTION --------------*/
 var mousePos;
 var isDown;
-var draggedObj;
+// var draggedObj;
 
 /*------------ SETUP | UPDATE | DRAW ----------*/
 function setup(){
@@ -59,11 +59,11 @@ function setup(){
     canvas.addEventListener('mouseup',
                           function(){
                             isDown = false;
-                            isDragging = false;
-                            for(var i = 0; i < canvasImages.length; i++){
-                              var obj = canvasImages[i];
-                              obj.isDragged = false;
-                            }
+                            // isDragging = false;
+                            // for(var i = 0; i < canvasImages.length; i++){
+                            //   var obj = canvasImages[i];
+                            //   obj.isDragged = false;
+                            // }
                           },
                           false);    
   update();
@@ -195,7 +195,7 @@ function initImage(obj, _index, _result, _img){
   obj.img = img;
   obj.pos = pos;
   obj.isHovered = false;
-  obj.isDragged = false;  
+  // obj.isDragged = false;  
   
   //Functions
   obj.updateImage = updateImage;
@@ -213,8 +213,8 @@ function updateImage(){
 
       //Check click
       if(isDown){
-        this.isDragged = true;
-        isDragging = true;
+        // this.isDragged = true;
+        // isDragging = true;
       }
 
     }else{
@@ -223,13 +223,13 @@ function updateImage(){
   }
 
   //Drag
-  if(this.isDragged){
-    var x, y;
-    x = mousePos.x;
-    y = mousePos.y;
-    this.pos.x = x;
-    this.pos.y = y;
-  }  
+  // if(this.isDragged){
+  //   var x, y;
+  //   x = mousePos.x;
+  //   y = mousePos.y;
+  //   this.pos.x = x;
+  //   this.pos.y = y;
+  // }  
 }
 
 var calculateDistance = function(x1, y1, x2, y2){
