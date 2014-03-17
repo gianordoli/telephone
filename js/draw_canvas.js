@@ -52,7 +52,7 @@ function setup(){
 
   for(var i = 0; i < allImages.length; i++){
     var imgObj = new Object();  //creating object
-    initImage(imgObj, i, allResults[i], allImages[i]);      //initializing
+    initObj(imgObj, i, allResults[i], allImages[i]);      //initializing
     canvasImages.push(imgObj);
   }
   mousePos = {x: 0, y: 0};
@@ -86,7 +86,7 @@ function setup(){
 
 function update(){
   for(var i = 0; i < canvasImages.length; i++){
-    canvasImages[i].updateImage();
+    canvasImages[i].updateObj();
   }
 
   // console.log('down: ' + isDown);
@@ -109,19 +109,10 @@ function draw(){
       var next = canvasImages[i + 1];
       drawConnection(obj, next);
     }
-
-    // console.log(obj.isHovered);
     if(obj.isHovered){
-
       isHovering = true;
-
-      ctx.fillStyle = parseHslaColor(0, 0, 0, 0.5);
-      ctx.fillRect(obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2,
-                   obj.img.width, obj.img.height);        
-      ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2 - 10, obj.pos.y - obj.img.height/2 - 10);
-    }else{
-      ctx.drawImage(obj.img, obj.pos.x - obj.img.width/2, obj.pos.y - obj.img.height/2);  
     }
+    obj.drawObj();
   }
 
   //Draw description
@@ -177,13 +168,13 @@ function drawDescription(obj){
   ctx.font="bold 12px Arial";
   var txt = obj.result.titleNoFormatting;
   var textWidth = ctx.measureText(txt).width;
-  var descPos = {x: obj.pos.x - obj.img.width/2,
-                 y: obj.pos.y + obj.img.height/2 + 4 }
-  wrapText(ctx, txt, descPos.x, descPos.y, obj.img.width/2 + margin.x - 16, 14);
+  var descPos = {x: obj.pos.x,
+                 y: obj.pos.y + obj.img.height/2}
+  wrapText(ctx, txt, descPos.x, descPos.y, (margin.x * 2) - 16, 14);
 }
 
 /*---------------- IMAGE OBJECTS --------------*/
-function initImage(obj, _index, _result, _img){
+function initObj(obj, _index, _result, _img){
   var index = _index;
   var result = _result;
   var img = _img;
@@ -206,10 +197,11 @@ function initImage(obj, _index, _result, _img){
   // obj.isDragged = false;  
   
   //Functions
-  obj.updateImage = updateImage;
+  obj.updateObj = updateObj;
+  obj.drawObj = drawObj;
 }
 
-function updateImage(){
+function updateObj(){
   //Check Hover
   //If the mouse is not dragging any object...
   // if(!isDragging){
@@ -240,6 +232,36 @@ function updateImage(){
   //   this.pos.x = x;
   //   this.pos.y = y;
   // }  
+}
+
+function drawObj(){
+  // console.log(obj.isHovered);
+
+  var currPos = {x: this.pos.x - this.img.width/2,
+                 y: this.pos.y - this.img.height/2 }
+
+  //Shadow
+  if(this.isHovered){
+    ctx.fillStyle = parseHslaColor(0, 0, 0, 0.5);
+    ctx.fillRect(currPos.x, currPos.y,
+                 this.img.width, this.img.height);
+  }
+
+  //Image
+  if(this.isHovered){
+    currPos.x -= 10;
+    currPos.y -= 10;
+  }
+  ctx.drawImage(this.img, currPos.x, currPos.y);
+
+  //Stroke
+  if(this.index == 0 || this.index == canvasImages.length - 1){
+    ctx.lineWidth = 5;
+  }else{
+    ctx.lineWidth = 1;
+  }
+  ctx.strokeStyle = 'black';    
+  ctx.strokeRect(currPos.x, currPos.y, this.img.width, this.img.height);              
 }
 
 var calculateDistance = function(x1, y1, x2, y2){
@@ -281,12 +303,14 @@ function wrapText(context, text, x, y, maxWidth, textLeading) {
   var testWidth;
   for(var n = 0; n < words.length; n++) {
     var testLine = line + words[n] + ' ';
-    var metrics = context.measureText(testLine);
-    var testWidth = metrics.width;
+    metrics = context.measureText(testLine);
+    testWidth = metrics.width;
     if (testWidth > maxWidth && n > 0) {
       context.fillStyle = 'black';
       context.textBaseline = 'top';
-      context.fillText(line, x, y);
+      metrics = context.measureText(line);
+      testWidth = metrics.width;
+      context.fillText(line, x - testWidth/2, y);
       line = words[n] + ' ';
       y += textLeading;
     } else {
@@ -298,7 +322,7 @@ function wrapText(context, text, x, y, maxWidth, textLeading) {
   context.textBaseline = 'top';
   metrics = context.measureText(line);
   testWidth = metrics.width;  
-  context.fillText(line, x, y);
+  context.fillText(line, x - testWidth/2, y);
 }
 
 function getMousePos(evt){
