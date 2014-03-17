@@ -115,21 +115,15 @@ function draw(){
     obj.drawObj();
   }
 
-  //Draw description
-  for(var i = 0; i < canvasImages.length; i++){
-    var obj = canvasImages[i];
-    if(obj.isHovered){
-      drawDescription(obj);
-    }
-  }
-
   //Change cursor
   if(isHovering){
     canvas.style.cursor = 'pointer';  
   }else{
     canvas.style.cursor = 'default';  
+    openUrl = '';
   }
 
+  console.log(openUrl);
   // request = requestAnimFrame(update);   
 }
 
@@ -168,8 +162,8 @@ function drawDescription(obj){
   ctx.font="bold 12px Arial";
   var txt = obj.result.titleNoFormatting;
   var textWidth = ctx.measureText(txt).width;
-  var descPos = {x: obj.pos.x,
-                 y: obj.pos.y + obj.img.height/2}
+  var descPos = { x: obj.pos.x,
+                  y: obj.pos.y + obj.img.height/2 + 14 };
   wrapText(ctx, txt, descPos.x, descPos.y, (margin.x * 2) - 16, 14);
 }
 
@@ -217,10 +211,8 @@ function updateObj(){
         // isDragging = true;
       // }
       openUrl = this.result.originalContextUrl;
-
     }else{
       this.isHovered = false;
-      openUrl = '';
     }
   // }
 
@@ -236,6 +228,7 @@ function updateObj(){
 
 function drawObj(){
   // console.log(obj.isHovered);
+  ctx.save();
 
   var currPos = {x: this.pos.x - this.img.width/2,
                  y: this.pos.y - this.img.height/2 }
@@ -249,8 +242,9 @@ function drawObj(){
 
   //Image
   if(this.isHovered){
-    currPos.x -= 10;
-    currPos.y -= 10;
+    // currPos.x -= 10;
+    // currPos.y -= 10;
+    ctx.translate(-10, -10);
   }
   ctx.drawImage(this.img, currPos.x, currPos.y);
 
@@ -261,7 +255,14 @@ function drawObj(){
     ctx.lineWidth = 1;
   }
   ctx.strokeStyle = 'black';    
-  ctx.strokeRect(currPos.x, currPos.y, this.img.width, this.img.height);              
+  ctx.strokeRect(currPos.x, currPos.y, this.img.width, this.img.height); 
+
+  //Text
+  if(this.isHovered || this.index == 0 || this.index == canvasImages.length - 1){
+    drawDescription(this);  
+  }  
+
+  ctx.restore();
 }
 
 var calculateDistance = function(x1, y1, x2, y2){
