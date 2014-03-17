@@ -20,7 +20,7 @@ var canvasPosition;
 var margin;
 var nColumns;
 var nLines;
-var xSpacing;
+var spacing;
 
 /*---------------- IMAGE OBJECTS --------------*/
 var canvasImages;
@@ -37,16 +37,18 @@ var openUrl;
 function setup(){
   canvasResize();
   canvasImages = [];
-  margin = 100; 
-  arrowSize = 30;
+  margin = {x: 120,
+            y: 120 }; 
+  arrowSize = 24;
   // isDown = false;
   // isDragging = false;
 
   nLines = 3;
   nColumns = Math.ceil(allImages.length/nLines);
-  xSpacing = (canvas.width - (2 * margin)) / (nColumns - 1);
+  spacing = { x: (canvas.width - (2 * margin.x)) / (nColumns - 1),
+              y: (canvas.height - (2 * margin.y)) / (nLines - 1)};
   // console.log(nColumns);
-  // console.log(xSpacing);
+  // console.log(spacing);
 
   for(var i = 0; i < allImages.length; i++){
     var imgObj = new Object();  //creating object
@@ -69,7 +71,9 @@ function setup(){
     canvas.addEventListener('mouseup',
                           function(){
                             // isDown = false;
-                            window.open(openUrl, '_blank');
+                            if(openUrl != ''){
+                              window.open(openUrl, '_blank');  
+                            }
                             // isDragging = false;
                             // for(var i = 0; i < canvasImages.length; i++){
                             //   var obj = canvasImages[i];
@@ -123,7 +127,7 @@ function draw(){
   //Draw description
   for(var i = 0; i < canvasImages.length; i++){
     var obj = canvasImages[i];
-    if(obj.isHovered || obj.index == 0 || obj.index == canvasImages.length - 1){
+    if(obj.isHovered){
       drawDescription(obj);
     }
   }
@@ -151,7 +155,7 @@ function drawConnection(obj, next){
       ctx.translate(start.x, start.y);
       ctx.rotate(angle);
 
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = parseHslaColor(0, 0, 0, 0.4);
         ctx.lineWidth = 2;        
         ctx.beginPath();
         ctx.moveTo(0, 0);
@@ -170,20 +174,12 @@ function drawConnection(obj, next){
 }
 
 function drawDescription(obj){
-  ctx.font="12px Arial";
+  ctx.font="bold 12px Arial";
   var txt = obj.result.titleNoFormatting;
   var textWidth = ctx.measureText(txt).width;
-  var descPos = {x: obj.pos.x - textWidth/2,
-                 y: obj.pos.y + obj.img.height/2 }
-  // console.log(textWidth);
-  ctx.fillStyle = 'white';
-  ctx.strokeStyle = 'black';
-  ctx.fillRect(descPos.x, descPos.y, textWidth + 10, 20);
-  ctx.strokeRect(descPos.x, descPos.y, textWidth + 10, 20);
-
-  ctx.textBaseline = 'top';
-  ctx.fillStyle = 'black';
-  ctx.fillText(txt, descPos.x + 4, descPos.y + 4);
+  var descPos = {x: obj.pos.x - obj.img.width/2,
+                 y: obj.pos.y + obj.img.height/2 + 4 }
+  wrapText(ctx, txt, descPos.x, descPos.y, obj.img.width/2 + margin.x - 16, 14);
 }
 
 /*---------------- IMAGE OBJECTS --------------*/
@@ -193,12 +189,12 @@ function initImage(obj, _index, _result, _img){
   var img = _img;
   var pos = new Object();
 
-  pos = {x: margin + Math.floor(index / 3) * xSpacing,
+  pos = {x: margin.x + Math.floor(index / nLines) * spacing.x,
          y: 0}
-         if(Math.floor(index / 3) % 2 == 0){
-          pos.y = margin + ((index % 3) * 200);
+         if(Math.floor(index / nLines) % 2 == 0){
+          pos.y = margin.y + ((index % 3) * spacing.y);
          }else{
-          pos.y = margin + ((2 * 200) - ((index % 3) * 200));
+          pos.y = margin.y + (( (nLines - 1) * spacing.y) - ( (index % nLines) * spacing.y));
          }
 
   //Vars
@@ -232,6 +228,7 @@ function updateImage(){
 
     }else{
       this.isHovered = false;
+      openUrl = '';
     }
   // }
 
@@ -274,6 +271,34 @@ var parseHslaColor = function(h, s, l, a){
   var myHslColor = 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + a +')';
   //console.log('called calculateAngle function');
   return myHslColor;
+}
+
+function wrapText(context, text, x, y, maxWidth, textLeading) {
+
+  var words = text.split(' ');
+  var line = '';
+  var metrics;
+  var testWidth;
+  for(var n = 0; n < words.length; n++) {
+    var testLine = line + words[n] + ' ';
+    var metrics = context.measureText(testLine);
+    var testWidth = metrics.width;
+    if (testWidth > maxWidth && n > 0) {
+      context.fillStyle = 'black';
+      context.textBaseline = 'top';
+      context.fillText(line, x, y);
+      line = words[n] + ' ';
+      y += textLeading;
+    } else {
+      line = testLine;
+    }
+  }
+
+  context.fillStyle = 'black';
+  context.textBaseline = 'top';
+  metrics = context.measureText(line);
+  testWidth = metrics.width;  
+  context.fillText(line, x, y);
 }
 
 function getMousePos(evt){
